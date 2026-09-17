@@ -58,10 +58,13 @@ a{color:var(--accent)}
 .logo-chip img{width:120px;height:auto;display:block}
 .wrap{max-width:940px;margin:0 auto;padding:20px 16px 60px}
 
-header{margin:4px 0 18px;display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
-.app-title{font-size:21px;font-weight:700;margin:0}
-.app-title span{color:var(--muted);font-weight:400;font-size:14px;margin-left:.6em}
-header .actions{display:flex;gap:10px;align-items:center;font-size:13px}
+.topbar{position:sticky;top:0;z-index:6;background:var(--bg);padding:max(6px,env(safe-area-inset-top)) max(14px,env(safe-area-inset-right)) 0 max(14px,env(safe-area-inset-left))}
+header{display:flex;align-items:center;gap:12px;flex-wrap:wrap;max-width:940px;margin:0 auto;padding:6px 0 10px}
+.brand{display:flex;align-items:center;gap:10px;color:inherit;text-decoration:none}
+.brand strong{font-size:19px;display:block}
+.tagline{display:block;color:var(--muted);font-size:12px}
+.chip-link{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:7px 12px;min-height:38px;display:inline-flex;align-items:center;color:var(--accent);text-decoration:none}
+header .actions{display:flex;gap:8px;align-items:center;font-size:13px;justify-content:flex-end}
 header .actions a{text-decoration:none}
 header .actions button{
   border:1px solid var(--line);background:var(--card);border-radius:8px;
@@ -70,7 +73,7 @@ header .actions button{
 header .actions button:hover{border-color:var(--line2)}
 #saveStatus{color:var(--muted)}
 
-nav{position:sticky;top:0;background:var(--bg);border-bottom:1px solid var(--line);z-index:5;
+nav{max-width:940px;margin:0 auto;display:flex;gap:6px;padding:0 0 8px;border-bottom:1px solid var(--line);
   display:flex;gap:6px;padding:10px 0;
   padding-left:max(12px,env(safe-area-inset-left));padding-right:max(12px,env(safe-area-inset-right));padding-top:max(10px,env(safe-area-inset-top));
   overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
@@ -203,16 +206,22 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
 <body>
 <div class="wrap">
 
+<div class="topbar">
 <header>
-  <h1 class="app-title"><a href="#" id="homeLink" style="color:inherit;text-decoration:none;display:inline-flex;align-items:center;gap:10px">
-   <span class="logo-chip"><img src="assets/logo.png" alt="Fire Emblem: Fortune’s Weave official logo" /></span>
-   Fortune’s Weave Companion</a> <span>fan-made planner</span></h1>
+  <a class="brand" href="#" id="homeLink">
+    <span class="logo-chip"><img src="assets/logo.png" alt="Fire Emblem: Fortune’s Weave official logo" /></span>
+    <span class="brand-text">
+      <strong>Fortune’s Weave Companion</strong>
+      <span class="tagline">free fan-made planner</span>
+    </span>
+  </a>
   <div class="actions">
     <span id="saveStatus" style="color:var(--muted)"></span>
     <button id="syncBtn">Backup / restore</button>
-    <a href="https://ko-fi.com/K3K11RWTSL" target="_blank" rel="noopener">Ko-fi</a>
+    <a class="chip-link" href="https://ko-fi.com/K3K11RWTSL" target="_blank" rel="noopener">Ko-fi</a>
   </div>
 </header>
+<nav>
 
 <nav>
   <button data-page="p1"><span class="nav-long">Part 1 · Heroic Games</span><span class="nav-short">Part 1</span></button>
@@ -221,6 +230,7 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
   <button data-page="recruits"><span class="nav-long">Recruits</span><span class="nav-short">Recruits</span></button>
   <button data-page="always"><span class="nav-long">Reference</span><span class="nav-short">Reference</span></button>
 </nav>
+</div>
 
 <section id="start" class="page active">
   <div class="section">
@@ -392,7 +402,7 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
   Unofficial fan tool, not affiliated with Nintendo, Intelligent Systems, or Koei Tecmo.
   <a href="https://ko-fi.com/K3K11RWTSL" target="_blank" rel="noopener">Support on Ko-fi</a>.
   <a href="#" id="aboutLink">About</a>
-  <span style="margin-left:8px">build 11 — 17 Sep</span>
+  <span style="margin-left:8px">build 12 — 17 Sep</span>
   <p style="margin:8px 0 0">Umami measures visits and feature use. Notes, checkmarks and save contents stay in your browser and are never sent in events.</p>
 </footer>
 </div>
