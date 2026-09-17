@@ -344,6 +344,11 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
 </dialog>
 
 <script>
+/* safe storage wrapper: never break the page when storage is blocked */
+const store={
+ get(k){try{return localStorage.getItem(k)}catch(e){return null}},
+ set(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+};
 const HEROES=[
  {id:'cai',      name:'Cai',      who:'Tames mounts on the world map.'},
  {id:'dietrich', name:'Dietrich', who:'Reveals hidden enemies while exploring.'},
@@ -479,27 +484,69 @@ const steps2=[
    note:'Then back to Preparation for the next chapter.'}}
 ];
 
+/* per-route differences inside the shared loop */
+const FLOW_TIPS={
+ cai:{
+  zero:[['Stable feeding','Cai-only weekly action: feed the stable to keep mounts ready.']],
+  spend:[['Stable','His path is where stable feeding exists — check it before leaving for the map.']],
+  world:[['Tame the mounts','Wild mounts are a Cai exclusive; tamed ones persist between chapters.']],
+  battle:[['Fire-burst Blaze Art','His super excels at clearing groups around a broken point.']]
+ },
+ dietrich:{
+  world:[['Reveal the map','His ability uncovers hidden enemies and locations — sweep an area before committing Turns elsewhere.']],
+  prep:[['The Answerer','Budget durability around his relic; relict weapons want proficiencies, not impulse Arts.']],
+  battle:[['Teleport Blaze Art','His super repositions — plan the landing square and the counter it eats.']]
+ },
+ theodora:{
+  world:[['Recruit troops','She gathers soldiers on the map to aid exploration and battles — spend her power before leaving an area.']],
+  spend:[['Gambits','Her skillset leans on control; keep gambit users adjacent in the roster.']],
+  battle:[['Earthen Throw','Her super is a control tool — stall the dangerous side of the map while you score elsewhere.']]
+ },
+ leda:{
+  zero:[['Watch for performances','Her inn shows and her route chains into free extra rewards if you time them with weekly refreshes.']],
+  spend:[['Perform at inns','Stacks with regular inn turns for XP plus materials — bundle shows with every meal.']],
+  world:[['Inns on the route','Pass through inn towns even when you do not need to rest; and look for her song buffs that swing a fight.']],
+  battle:[['Song buffs','Her super buffs the team or summons — deploy it to window for a big turn, not as raw damage.']]
+ },
+ eshmel:{
+  free:[['Smaller roster','The solo path faces Balor without the Heroes — plan for a tighter team from ch. 1.']],
+  spend:[['Invest early','Fewer recruits means each party slot is precious — level your core first.']],
+  prep:[['You are the super','Your Blaze Art is doing the hero work; budget HP and gauge earlier.']],
+  battle:[['Boss discipline','Balor-route bosses punish sloppy positioning — rewind sooner.']]
+ }
+};
+
+let currentHero=null;
+
+function renderDetail(list,d){
+ const extra=(currentHero&&FLOW_TIPS[currentHero]&&FLOW_TIPS[currentHero][d.step])||[];
+ list.innerHTML=`
+  <span class="badge">${d.text}</span>
+  <ul class="tips">
+   ${extra.map(([a,b])=>`<li><strong>${a}</strong> — <span>${b}</span></li>`).join('')}
+   ${d.tips.map(([a,b])=>`<li><strong>${a}</strong> — <span>${b}</span></li>`).join('')}
+  </ul>
+  <div class="callout">${d.note}</div>`;
+}
+
 /* loop rendering */
+const FLOWS={};
 function renderFlow(flowId,detailId,steps){
  const flow=document.getElementById(flowId);
  const list=document.getElementById(detailId);
+ FLOWS[flowId]={flow,list,steps,activeId:steps[0].id};
  flow.innerHTML=steps.map(s=>
   `<button class="node" data-step="${s.id}"><span class="n">${s.n}</span><b>${s.title}</b><em>${s.sub}</em></button>`).join('');
  flow.addEventListener('click',e=>{
   const b=e.target.closest('.node'); if(!b) return;
   flow.querySelectorAll('.node').forEach(x=>x.classList.remove('active'));
   b.classList.add('active');
+  FLOWS[flowId].activeId=b.dataset.step;
   const s=steps.find(x=>x.id===b.dataset.step);
-  renderDetail(list,s.detail);
+  renderDetail(list,{...s.detail,step:s.id});
  });
- renderDetail(list,steps[0].detail);
+ renderDetail(list,{...steps[0].detail,step:steps[0].id});
  flow.querySelector('.node').classList.add('active');
-}
-function renderDetail(list,d){
- list.innerHTML=`
-  <span class="badge">${d.text}</span>
-  <ul class="tips">${d.tips.map(([a,b])=>`<li><strong>${a}</strong> — <span>${b}</span></li>`).join('')}</ul>
-  <div class="callout">${d.note}</div>`;
 }
 renderFlow('flow1','detail1',steps1);
 renderFlow('flow2','detail2',steps2);
@@ -511,7 +558,7 @@ document.querySelectorAll('nav button').forEach(t=>{
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
   t.classList.add('active');
   document.getElementById(t.dataset.page).classList.add('active');
-  localStorage.setItem('fwc-part',t.dataset.page);
+  store.set('fwc-part',t.dataset.page);
  });
 });
 
@@ -523,21 +570,24 @@ picks.addEventListener('click',e=>{
  picks.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
  b.classList.add('active');
  document.getElementById('routeCard').textContent=routeText[b.dataset.route];
- localStorage.setItem('fwc-route',b.dataset.route);
+ store.set('fwc-route',b.dataset.route);
+ // re-render the open flow list with this hero's route tips
+ currentHero=b.dataset.route;
+ Object.values(FLOWS).forEach(f=>{
+  const s=f.steps.find(x=>x.id===f.activeId)||f.steps[0];
+  renderDetail(f.list,{...s.detail,step:s.id});
+ });
 });
 
 /* tracker */
 const KEY='fwc-progress-v1', BACKUP_KEY='fwc-progress-backup-v1';
 function loadState(){
- try{const raw=localStorage.getItem(KEY);return raw?JSON.parse(raw):{}}catch(e){return {}}
+ try{const raw=store.get(KEY);return raw?JSON.parse(raw):{}}catch(e){return {}}
 }
 let state=loadState();
 function saveState(){
- try{localStorage.setItem(KEY,JSON.stringify(state));setStatus('saved')}
- catch(e){
-  try{localStorage.setItem(BACKUP_KEY,JSON.stringify(state))}catch(e2){}
-  setStatus('autosave paused — export a backup');
- }
+ store.set(KEY,JSON.stringify(state));
+ setStatus('saved');
 }
 function setStatus(t){document.getElementById('saveStatus').textContent=t}
 
@@ -599,12 +649,11 @@ document.getElementById('aboutLink').onclick=e=>{e.preventDefault();about.showMo
 document.getElementById('closeAbout').onclick=()=>about.close();
 
 /* restore state */
-const savedRoute=localStorage.getItem('fwc-route')||'cai';
+const savedRoute=store.get('fwc-route')||'cai';
 const routeBtn=picks.querySelector(`[data-route="${savedRoute}"]`)||picks.querySelector('button');
-routeBtn.classList.add('active');
-document.getElementById('routeCard').textContent=routeText[routeBtn.dataset.route];
+routeBtn.click();
 
-const savedPart=localStorage.getItem('fwc-part');
+const savedPart=store.get('fwc-part');
 if(savedPart&&savedPart!=='start'){
  const tab=[...document.querySelectorAll('nav button')].find(x=>x.dataset.page===savedPart);
  if(tab) tab.click();
