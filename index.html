@@ -148,6 +148,19 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
   .trk .card textarea,dialog textarea{font-size:16px} /* prevents iOS focus zoom */
   input[type=range]{height:44px}
 }
+/* recruitment rows */
+.rq{display:flex;gap:10px;align-items:baseline;padding:10px 4px;border-bottom:1px solid var(--line)}
+.rq:last-child{border-bottom:0}
+.rq input{width:18px;height:18px;accent-color:var(--accent);flex:none}
+.rq .nm{font-weight:600;min-width:110px}
+.rq .rr{color:var(--muted);font-size:14px}
+.rq .rq-note{display:block;color:var(--muted);font-size:13px}
+.pills{display:flex;gap:8px;flex-wrap:wrap}
+.tips li.route-tip{background:var(--accent-soft)}
+.trk-hero.picked{border-color:var(--accent)}
+.rec-hidden{color:#b5aca0}
+.rec-row-label{display:flex;align-items:center;gap:10px}
+
 </style>
 </head>
 <body>
@@ -167,6 +180,7 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
   <button data-page="p1">Part 1 · Heroic Games</button>
   <button data-page="p2">Part 2 · After the timeskip</button>
   <button data-page="p3">Part 3</button>
+  <button data-page="recruits">Recruits</button>
   <button data-page="always">Reference</button>
   <button data-page="tracker">Progress</button>
 </nav>
@@ -308,6 +322,34 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
   </div>
 </section>
 
+<section id="recruits" class="page">
+  <div class="section">
+    <h2>Recruits</h2>
+    <p>Part 1 recruitment has four parts: the character's <strong>Support with your lord</strong> (S), your <strong>Renown level</strong> (R), usually a quest, item, or payment, and sometimes a Paralogue. Pick the route you're playing to see that route's requirements; tick characters once they've joined.</p>
+
+    <div class="picks" id="recRoutePicks"></div>
+
+    <div class="card" style="margin:10px 0 16px">
+      <h3>How it works</h3>
+      <ul>
+        <li>Gifts and shared inn meals raise Supports; stage shows at the theater do too (once unlocked).</li>
+        <li>Renown rises from main missions, subquests, Paralogues, and holding audiences with the Gods.</li>
+        <li>Supports, Blessing levels, and Renown fetch a global save — raised once, they apply to every route.</li>
+        <li>Recruiting later in Part 1 brings higher levels and better starting gear.</li>
+      </ul>
+    </div>
+
+    <input id="recSearch" type="search" placeholder="Filter by name…" style="width:100%;margin-bottom:8px" />
+    <div class="card" id="recList"></div>
+
+    <div class="card" style="margin-top:16px">
+      <h3>People who join later</h3>
+      <ul id="laterList" style="padding-left:18px;color:var(--muted);font-size:14px"></ul>
+    </div>
+    <div class="callout">Checkmarks are this browser only. Same backup/restore flow covers them.</div>
+  </div>
+</section>
+
 <section id="tracker" class="page">
   <div class="section">
     <h2>Progress</h2>
@@ -321,6 +363,7 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
   Unofficial fan tool, not affiliated with Nintendo, Intelligent Systems, or Koei Tecmo.
   <a href="https://ko-fi.com/K3K11RWTSL" target="_blank" rel="noopener">Support on Ko-fi</a>.
   <a href="#" id="aboutLink">About</a>
+  <span style="margin-left:8px">build 2 — 17 Sep</span>
 </footer>
 </div>
 
@@ -355,6 +398,66 @@ const HEROES=[
  {id:'theodora', name:'Theodora', who:'Recruits soldiers to aid exploration and combat.'},
  {id:'leda',     name:'Leda',     who:'Performs at inns for extra rewards.'},
  {id:'eshmel',   name:'Eshmel',   who:'Your avatar; the solo path faces Balor directly.'}
+];
+
+/* recruitment */
+const ROUTES=[
+ {id:'cai',label:'Cai route'},
+ {id:'dietrich',label:'Dietrich route'},
+ {id:'theodora',label:'Theodora route'},
+ {id:'leda',label:'Leda route'}
+];
+const RECRUITS=[
+ {name:'Seteth',reqs:{cai:'3S · 6R · Quest',dietrich:'not available',theodora:'3S · 6R · Quest',leda:'3S · 10R · Quest'}},
+ {name:'Ninae',reqs:{cai:'3S · 6R · 1 Paradise Fish',dietrich:'3S · 8R · 1 Paradise Fish',theodora:'3S · 6R · 1 Paradise Fish',leda:'3S · 6R · 1 Paradise Fish'},note:'Paradise Fish: Lake Brontes in Saveilon, past Valhalla Mine'},
+ {name:'Esmeralda',reqs:{cai:'3S · 7R · Quest',dietrich:'Automatic',theodora:'3S · 9R · Quest',leda:'3S · 6R · Quest'}},
+ {name:'Mikaela',reqs:{cai:'3S · 5R · 3000G',dietrich:'Automatic',theodora:'3S · 8R · 3000G',leda:'3S · 6R · 3000G'}},
+ {name:'Loretta',reqs:{cai:'3S · 7R · 3 Iron Swords',dietrich:'3S · 9R · 3 Iron Swords',theodora:'3S · 5R · 3 Iron Swords',leda:'3S · 5R · 3 Iron Swords'}},
+ {name:'Diego',reqs:{cai:'3S · 10R · Clears Orchel Paralogue',dietrich:'3S · 9R · Clears Orchel Paralogue',theodora:'2S · 8R · Clears Orchel Paralogue',leda:'3S · 8R · Clears Orchel Paralogue'}},
+ {name:'Jester',reqs:{cai:'3S · 10R · 3 Quests',dietrich:'3S · 6R · 3 Quests',theodora:'3S · 9R · 3 Quests',leda:'3S · 10R · 3 Quests'}},
+ {name:'Goliath',reqs:{cai:'3S · 7R · 3 Giant Meat',dietrich:'3S · 6R · 3 Giant Meat',theodora:'3S · 9R · 3 Giant Meat',leda:'3S · 10R · 3 Giant Meat'},note:'Giant Meat: one always in Sand-Shadow Fort, or giant-icon skirmishes'},
+ {name:'Tialla',reqs:{cai:'automatic',dietrich:'3S · 9R · Cai Paralogue · 3000G',theodora:'3S · 10R · Cai Paralogue · 3000G',leda:'3S · 8R · Cai Paralogue · 3000G'}},
+ {name:'Peter',reqs:{cai:'automatic',dietrich:'3S · 8R · Quest',theodora:'3S · 7R · Quest',leda:'3S · 10R · Quest'}},
+ {name:'Ultand',reqs:{cai:'automatic (ch. 6)',dietrich:'3S · 5R · Quest',theodora:'3S · 6R · Quest',leda:'3S · 8R · Quest'}},
+ {name:'Dante',reqs:{cai:'3S · 10R · 8000G',dietrich:'2S · 8R · 8000G',theodora:'3S · 6R · 8000G',leda:'3S · 10R · 8000G'}},
+ {name:'Lilian',reqs:{cai:'2S · 8R · 5000G',dietrich:'2S · 8R · 5000G',theodora:'automatic',leda:'2S · 7R · 5000G'}},
+ {name:'Lysander',reqs:{cai:'3S · 8R · 5 Iron Spears',dietrich:'3S · 6R · 5 Iron Spears',theodora:'automatic',leda:'3S · 7R · 5 Iron Spears'}},
+ {name:'Ursula',reqs:{cai:'3S · 10R · Talimun Paralogue · Yes x3',dietrich:'3S · 7R · Talimun Paralogue · Yes x3',theodora:'3S · 9R · Talimun Paralogue · Yes x3',leda:'not available'}},
+ {name:'Ludia',reqs:{cai:'3S · 9R · Quest',dietrich:'3S · 9R · Quest',theodora:'3S · 7R · Quest',leda:'3S · 7R · Quest'}},
+ {name:'Simon',reqs:{cai:'3S · 8R · Coin flip (Tails)',dietrich:'3S · 7R · Coin flip (Tails)',theodora:'3S · 7R · Coin flip (Tails)',leda:'3S · 6R · Coin flip (Tails)'}},
+ {name:'Fianna',reqs:{cai:'3S · 8R · 3000G',dietrich:'3S · 7R · 3000G',theodora:'3S · 9R · 3000G',leda:'3S · 5R · 3000G'}},
+ {name:'Nezha',reqs:{cai:'3S · 6R · 3 Sandworm Meat',dietrich:'3S · 10R · 3 Sandworm Meat',theodora:'2S · 6R · 3 Sandworm Meat',leda:'3S · 9R · 3 Sandworm Meat'}},
+ {name:'Sha Lan',reqs:{cai:'not available',dietrich:'3S · 10R · Anatolia Paralogue + answers',theodora:'not available',leda:'3S · 8R · Anatolia Paralogue + answers'},note:'Answers: Saramis, Da Mina, Grounded Ship'},
+ {name:'Dadao',reqs:{cai:'3S · 7R · 2 Kothar Gar',dietrich:'3S · 10R · 2 Kothar Gar',theodora:'2S · 5R · 2 Kothar Gar',leda:'2S · 5R · 2 Kothar Gar'}},
+ {name:'Halvin',reqs:{cai:'3S · 9R · 10 Dates',dietrich:'3S · 9R · 10 Dates',theodora:'3S · 7R · 10 Dates',leda:'3S · 7R · 10 Dates'}},
+ {name:'Guzran',reqs:{cai:'automatic (tutorial)',dietrich:'3S · 8R',theodora:'3S · 8R',leda:'1S · 3R'}},
+ {name:'Yang Jie',reqs:{cai:'2S · 3R · Quiz',dietrich:'automatic (tutorial)',theodora:'3S · 8R · Quiz',leda:'3S · 9R · Quiz'},note:'Quiz answers: Cheese, Moon, Potatoes'},
+ {name:'Io',reqs:{cai:'3S · 10R · 4000G',dietrich:'2S · 3R · 800G',theodora:'3S · 10R · 4000G',leda:'1S · 6R · 1500G'}},
+ {name:'Peppe',reqs:{cai:'1S · 9R · Bertrand Paralogue',dietrich:'3S · 8R · Bertrand Paralogue',theodora:'2S · 7R · Bertrand Paralogue',leda:'not available'}},
+ {name:'Noctula',reqs:{cai:'1S · 4R',dietrich:'1S · 6R',theodora:'1S · 3R',leda:'3S · 8R'}},
+ {name:'Sofia',reqs:{cai:'3S · 9R',dietrich:'3S · 9R',theodora:'automatic (tutorial)',leda:'3S · 7R'}},
+ {name:'Catania',reqs:{cai:'3S · 10R',dietrich:'1S · 8R',theodora:'3S · 7R',leda:'automatic (tutorial)'}},
+ {name:'Nydine',reqs:{cai:'1S · 6R · 2 Bronze Axes',dietrich:'2S · 5R · 2 Bronze Axes',theodora:'3S · 5R · 3 Iron Axes',leda:'3S · 10R · 3 Iron Axes'}},
+ {name:'Zarcone',reqs:{cai:'3S · 8R · Negotiate',dietrich:'3S · 7R · Negotiate',theodora:'1S · 4R · Negotiate',leda:'2S · 5R · Negotiate'},note:'Fee negotiable down to 10G'},
+ {name:'Majide',reqs:{cai:'2S · 5R · Question',dietrich:'3S · 8R · Question',theodora:'3S · 8R · Question',leda:'3S · 9R · Question'},note:'Ask three times before he accepts'},
+ {name:'Benditz',reqs:{cai:'3S · 9R',dietrich:'2S · 7R',theodora:'1S · 8R',leda:'3S · 7R'},note:'Appears in Dagsion from around day 4/11'},
+ {name:'Inyoni',reqs:{cai:'3S · 8R · 6000G',dietrich:'3S · 8R · 6000G',theodora:'1S · 9R · 4000G',leda:'1S · 7R · 3000G'},note:'Appears in Dagsion from around day 7/10'},
+ {name:'Jasmine',reqs:{cai:'1S · 8R · 2000G',dietrich:'3S · 9R · 5000G',theodora:'3S · 8R · 5000G',leda:'2S · 4R · 500G'},note:'Appears in Dagsion from around day 5/8'},
+ {name:'Alexandra',reqs:{cai:'2S · 7R',dietrich:'3S · 8R',theodora:'1S · 6R',leda:'3S · 10R'},note:'Appears in Dagsion from around day 5/29'},
+ {name:'Nuzzuo',reqs:{cai:'2S · 6R · 3 Iron Bows',dietrich:'1S · 9R · 2 Iron Bows',theodora:'1S · 6R · 3 Iron Bows',leda:'3S · 9R · 3 Iron Bows'},note:'Appears in Dagsion from around day 7/1'},
+ {name:'Kiroc',reqs:{cai:'3S · 8R · 8 Pure Water',dietrich:'1S · 4R · 3 Pure Water',theodora:'3S · 10R · 8 Pure Water',leda:'1S · 4R · 3 Pure Water'},note:'Appears in Dagsion from around day 5/4'},
+ {name:'Gaitz',reqs:{cai:'not available',dietrich:'3S · 10R · Bertrand Paralogue + Bertrand defeated (about ch. 12)',theodora:'not available',leda:'not available'}},
+ {name:'Fabio',reqs:{cai:'not available',dietrich:'automatic',theodora:'not available',leda:'3S · 9R · Dietrich Paralogue + Dietrich defeated (about ch. 12) + suitable item'},note:'A Da Mina weapon worked for RPG Site'},
+ {name:'Buccar',reqs:{cai:'not available',dietrich:'3S · 8R · Leda Paralogue',theodora:'3S · 8R · Leda Paralogue',leda:'automatic'}},
+ {name:'Sirocco',reqs:{cai:'3S · 9R · Quest',dietrich:'3S · 9R · Quest',theodora:'1S · 5R · Quest',leda:'automatic'}},
+ {name:'Olympia',reqs:{cai:'3S · 8R · 3 Quests',dietrich:'3S · 6R · 3 Quests',theodora:'3S · 9R · 3 Quests',leda:'automatic'}},
+ {name:'Mu',reqs:{cai:'3S · 9R · 3 Glirmosa',dietrich:'3S · 7R · 3 Glirmosa',theodora:'3S · 9R · 3 Glirmosa',leda:'automatic'},note:'Glirmosa: Mount Orgus, Rear Mountain Path, Forest of No Return, Giant Mount (Pasithea)'}
+];
+const LATER=[
+ ['Part 2','Bertrand joins as a guest unit; full member in Part 3. Complete his Paralogue first to be safe.'],
+ ['Part 2 ch. 2','Creek joins after you beat him — only if you did the "My Late Sister\u2019s Accessory" subquest in Part 1. Not every route sees that subquest.'],
+ ['Part 3','Anatolia, Talimun, and Orchel join automatically in the first section — complete their Paralogues in Part 1 first.'],
+ ['Part 3','Centurio ("Rescue Centurio" quest, second section). Hong Hua and Troy return automatically. Aswan and Tahonia join in the fifth section if they survive Part 2 ch. 3 as guests. Klapka joins in the sixth if he survives the fifth.']
 ];
 
 const routeText={
@@ -516,20 +619,20 @@ const FLOW_TIPS={
  }
 };
 
-let currentHero=null;
-
 function renderDetail(list,d){
  const extra=(currentHero&&FLOW_TIPS[currentHero]&&FLOW_TIPS[currentHero][d.step])||[];
+ const hero=HEROES.find(h=>h.id===currentHero);
  list.innerHTML=`
-  <span class="badge">${d.text}</span>
+  <span class="badge">${hero?hero.name+' route · ':''}${d.text}</span>
   <ul class="tips">
-   ${extra.map(([a,b])=>`<li><strong>${a}</strong> — <span>${b}</span></li>`).join('')}
+   ${extra.map(([a,b])=>`<li class="route-tip"><strong>${a}</strong> — <span>${b}</span></li>`).join('')}
    ${d.tips.map(([a,b])=>`<li><strong>${a}</strong> — <span>${b}</span></li>`).join('')}
   </ul>
   <div class="callout">${d.note}</div>`;
 }
 
 /* loop rendering */
+let currentHero=store.get('fwc-route')||'cai';
 const FLOWS={};
 function renderFlow(flowId,detailId,steps){
  const flow=document.getElementById(flowId);
@@ -562,21 +665,26 @@ document.querySelectorAll('nav button').forEach(t=>{
  });
 });
 
-/* hero picks */
-const picks=document.getElementById('routePicks');
-picks.innerHTML=HEROES.map(h=>`<button data-route="${h.id}">${h.name}</button>`).join('');
-picks.addEventListener('click',e=>{
- const b=e.target.closest('button'); if(!b) return;
- picks.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
- b.classList.add('active');
- document.getElementById('routeCard').textContent=routeText[b.dataset.route];
- store.set('fwc-route',b.dataset.route);
- // re-render the open flow list with this hero's route tips
- currentHero=b.dataset.route;
+/* one shared hero (route) selector — synced everywhere */
+function selectHero(id){
+ currentHero=id;
+ store.set('fwc-route',id);
+ document.getElementById('routeCard').textContent=routeText[id];
+ document.querySelectorAll('[data-route]').forEach(x=>x.classList.toggle('active',x.dataset.route===id));
+ document.querySelectorAll('.trk-hero').forEach(c=>c.classList.toggle('picked',c.dataset.hero===id));
  Object.values(FLOWS).forEach(f=>{
   const s=f.steps.find(x=>x.id===f.activeId)||f.steps[0];
   renderDetail(f.list,{...s.detail,step:s.id});
  });
+ renderRecruits();
+}
+
+/* hero picks (inline switcher on the Games tab) */
+const picks=document.getElementById('routePicks');
+picks.innerHTML=HEROES.map(h=>`<button data-route="${h.id}">${h.name}</button>`).join('');
+picks.addEventListener('click',e=>{
+ const b=e.target.closest('button'); if(!b) return;
+ selectHero(b.dataset.route);
 });
 
 /* tracker */
@@ -593,12 +701,20 @@ function setStatus(t){document.getElementById('saveStatus').textContent=t}
 
 const grid=document.getElementById('trkGrid');
 grid.innerHTML=HEROES.map(h=>`
- <div class="card" data-hero="${h.id}">
+ <div class="card trk-hero" data-hero="${h.id}">
   <h3>${h.name} <span style="color:var(--muted);font-weight:400;font-size:13px">— ${h.who}</span></h3>
+  <p class="picked-tag" style="color:var(--accent);margin:0 0 6px;font-size:13px;min-height:18px"></p>
   <div class="trk-row"><input type="range" min="0" max="30" value="${state[h.id]?.chNum||0}" data-ch="${h.id}" /><span class="pct" data-out="${h.id}">${state[h.id]?.ch||'—'}</span></div>
   <textarea placeholder="Notes — recruits, deadlines, class plans…" data-note="${h.id}">${state[h.id]?.note||''}</textarea>
+  <button class="pick-hero" data-pick="${h.id}" style="margin-top:8px">View this route's flow →</button>
  </div>`).join('');
 
+grid.addEventListener('click',e=>{
+ const b=e.target.closest('[data-pick]');
+ if(!b) return;
+ selectHero(b.dataset.pick);
+ document.querySelector('nav [data-page="p1"]').click();
+});
 grid.addEventListener('input',e=>{
  const t=e.target, hero=t.dataset.ch||t.dataset.note;
  if(!hero) return;
@@ -642,6 +758,44 @@ document.getElementById('importBtn').onclick=()=>{
   msg.className='err';
  }
 };
+/* recruits tab */
+const recPicks=document.getElementById('recRoutePicks');
+recPicks.innerHTML=ROUTES.map(r=>`<button data-route="${r.id}" class="pills-btn">${r.label}</button>`).join('');
+const recList=document.getElementById('recList');
+let recQuery='';
+
+function renderRecruits(){
+ recPicks.querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.route===currentHero));
+ const r=currentHero;
+ recList.innerHTML=RECRUITS
+  .filter(c=>!recQuery||c.name.toLowerCase().includes(recQuery))
+  .sort((a,b)=>a.name.localeCompare(b.name))
+  .map(c=>{
+   const req=c.reqs[r]||'';
+   return `<div class="rq">
+    <input type="checkbox" data-rec="${c.name}" ${state.recruits?.[c.name]?'checked':''} />
+    <span class="nm">${c.name}</span>
+    <span class="rr ${req==='not available'?'rec-hidden':''}">${req}${c.note?`<span class="rq-note">${c.note}</span>`:''}</span>
+   </div>`;
+  }).join('');
+}
+
+recPicks.addEventListener('click',e=>{
+ const b=e.target.closest('button'); if(!b) return;
+ selectHero(b.dataset.route);
+});
+document.getElementById('recSearch').addEventListener('input',e=>{
+ recQuery=e.target.value.toLowerCase();
+ renderRecruits();
+});
+recList.addEventListener('change',e=>{
+ const c=e.target.dataset.rec;
+ if(!c) return;
+ state.recruits=state.recruits||{};
+ state.recruits[c]=e.target.checked;
+ saveState();
+});
+document.getElementById('laterList').innerHTML=LATER.map(([p,t])=>`<li><strong>${p}</strong> — ${t}</li>`).join('');
 
 /* about */
 const about=document.getElementById('aboutDlg');
