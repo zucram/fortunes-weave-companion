@@ -3,19 +3,15 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<meta name="theme-color" content="#0b0a08" />
-<title>Fortune's Weave Companion — Flow Guide & Hero Route Tracker</title>
-<meta name="description" content="Free, ad-free fan companion for Fire Emblem Fortune's Weave on Switch 2. Hero route flows, the Free Time turn loop, Blaze Arts, dungeon Clashes, and a progress tracker that saves in your browser. No account required." />
+<meta name="theme-color" content="#faf7f2" />
+<title>Fortune's Weave Companion</title>
+<meta name="description" content="A fan-made planner and reference for Fire Emblem Fortune's Weave: hero routes, the Free Time turn loop, and notes that save in your browser." />
 <link rel="canonical" href="https://zucram.github.io/fortunes-weave-companion/" />
 <meta property="og:type" content="website" />
-<meta property="og:site_name" content="Fortune's Weave Companion" />
-<meta property="og:title" content="Fortune's Weave Companion — Flow Guide & Hero Route Tracker" />
-<meta property="og:description" content="Free fan-made companion for Fire Emblem Fortune's Weave. Hero routes, the Free Time turn loop, and a browser-saved progress tracker. No account, no ads." />
+<meta property="og:title" content="Fortune's Weave Companion" />
+<meta property="og:description" content="A fan-made planner and reference for Fire Emblem Fortune's Weave: hero routes, the Free Time turn loop, and notes that save in your browser." />
 <meta property="og:url" content="https://zucram.github.io/fortunes-weave-companion/" />
-<meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="Fortune's Weave Companion" />
-<meta name="twitter:description" content="Free fan-made companion for Fire Emblem Fortune's Weave. Hero routes, the Free Time turn loop, and a browser-saved progress tracker." />
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0a08'/%3E%3Cpath d='M16 4l2.6 9.4L28 16l-9.4 2.6L16 28l-2.6-9.4L4 16l9.4-2.6z' fill='%23d8b76a'/%3E%3C/svg%3E" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231d1812'/%3E%3Cpath d='M16 5l2.4 8.6L27 16l-8.6 2.4L16 27l-2.4-8.6L5 16l8.6-2.4z' fill='%23c9a75f'/%3E%3C/svg%3E" />
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -24,571 +20,435 @@
   "url": "https://zucram.github.io/fortunes-weave-companion/",
   "applicationCategory": "GameApplication",
   "operatingSystem": "Any",
-  "isAccessibleForFree": true,
-  "description": "Free fan-made companion for Fire Emblem Fortune's Weave on Nintendo Switch 2. Hero route flows, the Free Time turn loop, Blaze Arts, dungeon Clashes, and a browser-saved progress tracker.",
-  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+  "isAccessibleForFree": true
 }
 </script>
 <style>
 :root{
-  --bg:#0b0a08;--panel:#15120e;--panel2:#1d1812;--panel3:#231d15;
-  --line:#3b3122;--line2:#57472f;--text:#f7f0df;--muted:#aaa18f;
-  --gold:#d8b76a;--gold2:#f0d896;--green:#79ad8b;--red:#c36d63;--blue:#88a5d4;
-  --shadow:0 20px 55px rgba(0,0,0,.28)
+  --bg:#faf7f2;--card:#fff;--ink:#2a2620;--muted:#6f6759;
+  --line:#e4ddd0;--line2:#d3c9b6;--accent:#9a7a2e;--accent-soft:#f3ead6;
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
 body{
-  margin:0;color:var(--text);
-  background:
-    radial-gradient(circle at 78% -8%,rgba(216,183,106,.12),transparent 34rem),
-    radial-gradient(circle at 5% 42%,rgba(128,156,204,.05),transparent 26rem),
-    var(--bg);
-  font:15px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
+  margin:0;color:var(--ink);background:var(--bg);
+  font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;
 }
 button{font:inherit}
-.wrap{max-width:1180px;margin:auto;padding:26px 18px 70px}
-header{display:flex;justify-content:space-between;gap:24px;align-items:flex-end;margin-bottom:20px}
-.eyebrow{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:800}
-h1{font-family:Georgia,serif;font-size:clamp(30px,5vw,52px);line-height:1;margin:6px 0 8px}
-.subtitle{color:var(--muted);max-width:690px;margin:0}
-.head-actions{display:flex;flex-direction:column;gap:8px;align-items:flex-end}
-.btn{
-  border:1px solid var(--line2);background:#14110d;color:var(--gold2);border-radius:11px;
-  padding:9px 14px;cursor:pointer;font-weight:800;text-decoration:none;font-size:13px;display:inline-flex;gap:6px;align-items:center
+a{color:var(--accent)}
+.wrap{max-width:940px;margin:0 auto;padding:28px 16px 60px}
+
+header{margin:4px 0 18px;display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
+.app-title{font-size:21px;font-weight:700;margin:0}
+.app-title span{color:var(--muted);font-weight:400;font-size:14px;margin-left:.6em}
+header .actions{display:flex;gap:10px;align-items:center;font-size:13px}
+header .actions a{text-decoration:none}
+header .actions button{
+  border:1px solid var(--line);background:var(--card);border-radius:8px;
+  padding:6px 12px;cursor:pointer;color:var(--ink)
 }
-.btn:hover{background:var(--panel3)}
-.btn.ghost{color:var(--muted);border-color:var(--line)}
-.save-banner{
-  border:1px solid var(--line);background:rgba(21,18,14,.72);border-radius:13px;
-  padding:10px 14px;color:var(--muted);font-size:13px;margin-bottom:16px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center
+header .actions button:hover{border-color:var(--line2)}
+#saveStatus{color:var(--muted)}
+
+nav{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-bottom:8px;overflow-x:auto}
+nav button{
+  border:0;background:none;padding:10px 14px 9px;cursor:pointer;color:var(--muted);
+  border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap
 }
-.save-banner b{color:var(--text)}
-.save-banner .actions{display:flex;gap:8px;flex-wrap:wrap}
-.parts{
-  display:grid;grid-template-columns:repeat(5,1fr);gap:8px;
-  background:rgba(21,18,14,.72);border:1px solid var(--line);padding:7px;border-radius:16px;
-  position:sticky;top:8px;z-index:10;backdrop-filter:blur(12px);box-shadow:var(--shadow);margin-bottom:18px
+nav button:hover{color:var(--ink)}
+nav button.active{color:var(--ink);border-bottom-color:var(--accent);font-weight:600}
+.page{display:none;padding-top:14px}
+.page.active{display:block}
+
+h2{font-size:19px;margin:6px 0 10px}
+.section{margin-bottom:26px}
+.section p{color:var(--muted);margin:0 0 12px}
+
+/* hero picks */
+.picks{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 8px}
+.picks button{
+  border:1px solid var(--line);background:var(--card);border-radius:8px;
+  padding:7px 13px;cursor:pointer;color:var(--muted)
 }
-.tab{
-  border:0;border-radius:11px;padding:11px 12px;background:transparent;color:var(--muted);
-  cursor:pointer;font-weight:800;transition:.15s
-}
-.tab:hover{background:var(--panel2);color:var(--text)}
-.tab.active{background:linear-gradient(180deg,#2c2418,#211a12);color:var(--gold2);box-shadow:inset 0 0 0 1px var(--line2)}
-.page{display:none}.page.active{display:block}
-.hero-card,.detail,.route-card,.mini-card,.handoff{
-  border:1px solid var(--line);background:linear-gradient(180deg,rgba(29,24,18,.96),rgba(21,18,14,.96));border-radius:18px;box-shadow:var(--shadow)
-}
-.hero-card{padding:18px 18px 16px;margin-bottom:16px}
-.hero-card h2,.detail h2{font-family:Georgia,serif;margin:0 0 5px;font-size:24px}
-.hero-card p,.detail p{margin:0;color:var(--muted)}
-.route-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
-.route{
-  border:1px solid var(--line);background:#14110d;color:var(--muted);border-radius:999px;padding:8px 13px;
-  cursor:pointer;font-weight:750
-}
-.route.active{color:#14110d;background:var(--gold2);border-color:var(--gold2)}
-.route-card{padding:12px 14px;margin-top:12px;color:var(--muted);min-height:47px}
-.route-card strong{color:var(--text)}
-.flow-wrap{overflow:auto;padding:6px 2px 16px}
-.flow{display:flex;align-items:stretch;gap:8px;min-width:930px}
+.picks button.active{background:var(--accent-soft);border-color:var(--accent);color:var(--ink)}
+#routeCard{color:var(--muted);font-size:14px;margin:4px 0 16px}
+
+/* loop steps */
+.flow{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;background:var(--card);overflow:hidden}
 .node{
-  flex:1;min-width:132px;border:1px solid var(--line);border-radius:16px;background:var(--panel);padding:14px 13px;
-  color:var(--muted);cursor:pointer;text-align:left;position:relative;transition:.15s
+  display:flex;gap:12px;align-items:baseline;text-align:left;border:0;background:none;
+  padding:12px 16px;cursor:pointer;color:var(--ink);border-bottom:1px solid var(--line)
 }
-.node:hover{transform:translateY(-2px);border-color:var(--line2);background:var(--panel2)}
-.node.active{border-color:var(--gold);background:linear-gradient(180deg,#2a2116,#1b160f);color:var(--text);box-shadow:0 0 0 1px rgba(216,183,106,.15)}
-.node .n{display:block;font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--gold);font-weight:900;margin-bottom:6px}
-.node b{display:block;font-size:15px;line-height:1.25}
-.node em{display:block;font-style:normal;font-size:12px;color:var(--muted);margin-top:5px}
-.arrow{display:flex;align-items:center;color:var(--line2);font-size:24px;font-weight:400}
-.detail{padding:18px;margin-top:2px}
-.detail-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
-.badge{
-  display:inline-flex;border:1px solid var(--line2);border-radius:999px;padding:5px 8px;
-  font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--gold2);white-space:nowrap
-}
-.todo{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:15px}
-.tip{
-  border:1px solid var(--line);border-radius:13px;background:#100e0b;padding:12px 12px 11px;min-height:72px
-}
-.tip strong{display:block;margin-bottom:2px;color:var(--text)}
-.tip span{color:var(--muted);font-size:13px}
-.tip.warn{border-color:#6b463e;background:#17100e}
-.tip.good{border-color:#3f6048}
-.tip.gold{border-color:#68552e}
+.node:last-child{border-bottom:0}
+.node:hover{background:#f6f1e7}
+.node.active{background:var(--accent-soft)}
+.node .n{color:var(--muted);font-size:12px;width:16px;flex:none}
+.node b{font-weight:600}
+.node em{font-style:normal;color:var(--muted);font-size:13px;margin-left:.5em}
+.detail{margin-top:14px}
+.badge{color:var(--muted);font-size:12px;display:block;margin-bottom:8px}
+.tips{margin:0;padding:0;list-style:none;border:1px solid var(--line);border-radius:10px;background:var(--card)}
+.tips li{padding:10px 14px;border-bottom:1px solid var(--line)}
+.tips li:last-child{border-bottom:0}
+.tips li strong{font-weight:600}
+.tips li span{color:var(--muted);font-size:14px}
 .callout{
-  margin-top:12px;border-left:3px solid var(--gold);background:rgba(216,183,106,.06);padding:10px 12px;color:var(--muted);border-radius:0 10px 10px 0
+  margin-top:12px;padding:10px 14px;background:var(--accent-soft);border-radius:8px;
+  font-size:14px;color:#5d4c1e
 }
-.section-title{font-family:Georgia,serif;font-size:22px;margin:23px 0 10px}
-.handoff{padding:15px 16px;margin-top:14px}
-.handoff .path{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-top:10px}
-.pill{border:1px solid var(--line);border-radius:999px;background:#100e0b;padding:6px 10px;color:var(--muted);font-size:12px}
-.pill.key{color:var(--gold2);border-color:var(--line2)}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.mini-card{padding:15px}
-.mini-card h3{margin:0 0 9px;font-size:15px}
-.mini-flow{display:flex;flex-direction:column;gap:7px}
-.step{border:1px solid var(--line);background:#100e0b;border-radius:11px;padding:9px 10px;color:var(--muted);font-size:13px}
-.step strong{color:var(--text)}
-.down{text-align:center;color:var(--line2);height:12px;line-height:10px}
-.legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px;color:var(--muted);font-size:12px}
-.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px}.d-gold{background:var(--gold)}.d-red{background:var(--red)}.d-green{background:var(--green)}
+
+/* reference grids */
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{border:1px solid var(--line);border-radius:10px;background:var(--card);padding:14px 16px}
+.card h3{font-size:15px;margin:0 0 8px}
+.card ul{margin:0;padding-left:18px;color:var(--muted);font-size:14px}
+.card ul li{margin:4px 0}
+.card ul li strong{color:var(--ink);font-weight:600}
+
 /* tracker */
-.trk{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
-.trk-hero{border:1px solid var(--line);border-radius:14px;background:#100e0b;padding:13px}
-.trk-hero h3{margin:0 0 4px;font-size:14px}
-.trk-hero .who{color:var(--muted);font-size:12px;margin:0 0 10px;min-height:32px}
-.trk-row{display:flex;gap:6px;align-items:center;margin-bottom:6px}
-.trk-row label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);flex:1}
-input[type=range]{width:100%;accent-color:var(--gold)}
-.pct{font-weight:900;color:var(--gold2);font-size:13px;min-width:38px;text-align:right}
-.trk-hero textarea{
-  width:100%;margin-top:6px;background:#0b0a08;border:1px solid var(--line);border-radius:10px;color:var(--text);
-  font:12px/1.4 ui-monospace,monospace;padding:8px;min-height:56px;resize:vertical
+.trk{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.trk .card textarea{
+  width:100%;margin-top:8px;border:1px solid var(--line);border-radius:8px;background:#fcfaf6;
+  padding:8px;font:13px/1.5 ui-monospace,monospace;color:var(--ink);min-height:64px;resize:vertical
 }
-.trk-hero textarea:focus{outline:1px solid var(--line2)}
-footer{margin-top:30px;color:#786f60;font-size:12px;text-align:center}
-footer a{color:var(--muted)}
-dialog{
-  background:var(--panel);color:var(--text);border:1px solid var(--line2);border-radius:16px;
-  padding:18px;max-width:560px;width:92%
-}
-dialog::backdrop{background:rgba(0,0,0,.6)}
-dialog h3{font-family:Georgia,serif;margin:0 0 8px}
+.trk .card textarea:focus{outline:1px solid var(--line2)}
+.trk-row{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
+.trk-row input[type=range]{flex:1;accent-color:var(--accent)}
+.trk-row .pct{min-width:48px;text-align:right;font-variant-numeric:tabular-nums;color:var(--ink)}
+
+footer{margin-top:40px;padding-top:14px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+
+dialog{border:1px solid var(--line);border-radius:10px;padding:18px;max-width:520px;width:92%;background:var(--card)}
+dialog::backdrop{background:rgba(0,0,0,.35)}
+dialog h3{margin:0 0 6px;font-size:17px}
 dialog p{color:var(--muted);font-size:13px}
-dialog textarea{width:100%;min-height:150px;background:#0b0a08;border:1px solid var(--line);border-radius:10px;color:var(--text);font:12px/1.4 ui-monospace,monospace;padding:9px}
+dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-radius:8px;background:#fcfaf6;padding:8px;font:12px/1.5 ui-monospace,monospace;color:var(--ink)}
 .dlg-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap}
-.err{color:var(--red)}
-@media (max-width:800px){
-  header{align-items:flex-start;flex-direction:column}.head-actions{align-items:flex-start}
-  .parts{grid-template-columns:repeat(2,1fr)}
-  .todo{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.trk{grid-template-columns:1fr}
-  .wrap{padding:18px 12px 50px}
+.dlg-actions button{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:7px 12px;cursor:pointer}
+.dlg-actions button:hover{border-color:var(--line2)}
+.err{color:#a4412f}
+
+@media (max-width:720px){
+  .cards,.trk{grid-template-columns:1fr}
+  .node em{display:none}
 }
 </style>
 </head>
 <body>
 <div class="wrap">
+
 <header>
-  <div>
-    <div class="eyebrow">Free fan-made companion · Spoiler-light</div>
-    <h1>Fortune's Weave Companion</h1>
-    <p class="subtitle">A Fire Emblem <b>Fortune's Weave</b> companion for playing at your own pace. Pick a Hero, follow the loop, keep your own notes. Not a rigid route and not a 100% checklist.</p>
-  </div>
-  <div class="head-actions">
-    <button class="btn" id="syncBtn">⟳ Save backup / restore</button>
-    <a class="btn ghost" href="https://ko-fi.com/K3K11RWTSL" target="_blank" rel="noopener">♡ Support on Ko-fi</a>
+  <h1 class="app-title">Fortune's Weave Companion <span>fan-made planner</span></h1>
+  <div class="actions">
+    <span id="saveStatus" style="color:var(--muted)"></span>
+    <button id="syncBtn">Backup / restore</button>
+    <a href="https://ko-fi.com/K3K11RWTSL" target="_blank" rel="noopener">Ko-fi</a>
   </div>
 </header>
 
-<div class="save-banner">
-  <span><b>No account or ads.</b> Progress saves in this browser. Use <b>Save backup / restore</b> to move between devices.</span>
-  <span class="actions" id="saveStatus">Saved ✓</span>
-</div>
-
-<nav class="parts">
-  <button class="tab active" data-page="start">Start here</button>
-  <button class="tab" data-page="p1">Part I · Heroic Games</button>
-  <button class="tab" data-page="p2">Part II · After the timeskip</button>
-  <button class="tab" data-page="always">Always useful</button>
-  <button class="tab" data-page="tracker">My progress</button>
+<nav>
+  <button class="active" data-page="start">Start here</button>
+  <button data-page="p1">Heroic Games</button>
+  <button data-page="p2">After the timeskip</button>
+  <button data-page="always">Reference</button>
+  <button data-page="tracker">Progress</button>
 </nav>
 
 <section id="start" class="page active">
-  <div class="hero-card">
-    <h2>What is Fortune's Weave?</h2>
-    <p>Fire Emblem's 18th mainline entry, out now on Nintendo Switch 2 (Sept 17, 2026). You play <b>Eshmel</b>, the Herald of the Pale Raven — a customizable avatar sent back in time from the demon god Balor's ruined future to save the four Heroes of the Dagdan Empire. The story spans two eras: the <b>Heroic Games</b> in the city of Dagsion (~year 1449), and a <b>timeskip to 1454</b> when the war with Balor begins.</p>
+  <div class="section">
+    <h2>What is this</h2>
+    <p>Fire Emblem Fortune's Weave is out on Switch 2. You play Eshmel, a customizable avatar sent back in time from Balor's ruined future to save four Heroes. The story covers the Heroic Games in Dagsion (around year 1449), then a timeskip to the war in 1454.</p>
+    <p>This site is a small planner and reference, not a day-by-day route. Progress saves in this browser only — no account, no ads.</p>
   </div>
 
-  <div class="grid">
-    <div class="mini-card">
+  <div class="section cards">
+    <div class="card">
       <h3>The four Heroes</h3>
-      <div class="mini-flow">
-        <div class="step"><strong>Cai</strong> — enter the Games to free his imprisoned father, Castor</div>
-        <div class="step"><strong>Dietrich</strong> — Fódlan noble, shipwrecked; craves strong foes. Wields the relic <em>Answerer</em></div>
-        <div class="step"><strong>Theodora</strong> — queen of Saramis, sworn to restore the goddess Yu Phas</div>
-        <div class="step"><strong>Leda</strong> — dancer-musician hunting her father's killer, the White-Maned Demon Bertrand</div>
-      </div>
+      <ul>
+        <li><strong>Cai</strong> — wants to free his father Castor</li>
+        <li><strong>Dietrich</strong> — Fódlan noble, wields the Answerer, hunts strong foes</li>
+        <li><strong>Theodora</strong> — queen of Saramis, serves the goddess Yu Phas</li>
+        <li><strong>Leda</strong> — dancer hunting her father's killer Bertrand</li>
+      </ul>
     </div>
-
-    <div class="mini-card">
-      <h3>Read this first</h3>
-      <div class="mini-flow">
-        <div class="step"><strong class="err">One autosave only.</strong> There is no manual save-slot management. Fortuna's Blessing (turn rewind) is your safety net — don't treat rewinds as failures.</div>
-        <div class="step"><strong>Heroes run in parallel.</strong> You can time-travel between Hero paths; progress saves per Hero. Finish one route's loop before seriously pushing another.</div>
-        <div class="step"><strong>Deadlines move.</strong> Quest and qualifier deadlines can differ per route. Check the in-game calendar every Free Time block.</div>
-      </div>
-    </div>
-
-    <div class="mini-card">
-      <h3>The Dagsion loop</h3>
-      <div class="mini-flow">
-        <div class="step"><strong>1 day = 4 turns.</strong> Time is the real currency.</div>
-        <div class="down">↓</div>
-        <div class="step">Inns: rest, eat, and <strong>spend turns</strong> for XP + materials</div>
-        <div class="down">↓</div>
-        <div class="step">Arena · Temple Row · Arcade · quests — each costs turns</div>
-        <div class="down">↓</div>
-        <div class="step">World map travel also consumes time</div>
-      </div>
+    <div class="card">
+      <h3>Good to know</h3>
+      <ul>
+        <li>There is <strong>one autosave slot</strong> for the whole game. Fortuna's Blessing (move rewind) is the safety net, so use it early.</li>
+        <li>Hero paths save in parallel — you can switch between them without losing progress.</li>
+        <li>Quest and qualifier deadlines differ per route. Check the in-game calendar each Free Time block.</li>
+        <li>One in-game day is four turns; travel costs time.</li>
+      </ul>
     </div>
   </div>
 
-  <div class="handoff">
-    <strong>New here?</strong>
-    <div class="path">
-      <span class="pill key">Pick a Hero tab below</span><span>→</span>
-      <span class="pill">skim its flow once</span><span>→</span>
-      <span class="pill">play at your own pace</span><span>→</span>
-      <span class="pill">log choices in My progress</span>
-    </div>
-    <div class="callout"><b>Unofficial fan tool.</b> Not affiliated with Nintendo, Intelligent Systems, or Koei Tecmo. All game content belongs to its owners. Sources: Nintendo Direct transcripts, Serenes Forest, Fire Emblem Wiki.</div>
-  </div>
+  <div class="callout">Unofficial fan tool, not affiliated with Nintendo or Intelligent Systems. Sources: Nintendo Direct transcripts, Serenes Forest, Fire Emblem Wiki.</div>
 </section>
 
 <section id="p1" class="page">
-  <div class="hero-card">
-    <h2>Part I: the Heroic Games loop</h2>
-    <p>Most calendar, world-map, and Free Time advice belongs here. Pick your current Hero route.</p>
-    <div class="route-row">
-      <button class="route active" data-route="cai">Cai</button>
-      <button class="route" data-route="dietrich">Dietrich</button>
-      <button class="route" data-route="theodora">Theodora</button>
-      <button class="route" data-route="leda">Leda</button>
-      <button class="route" data-route="eshmel">Eshmel / solo</button>
-    </div>
-    <div class="route-card" id="routeCard"></div>
-  </div>
+  <div class="section">
+    <h2>The Heroic Games loop</h2>
+    <p>Free Time runs on a clock: about 11 in-game months from preliminaries to the final match. Pick the hero you're playing as — their notes are below.</p>
+    <div class="picks" id="routePicks"></div>
+    <div id="routeCard"></div>
 
-  <div class="flow-wrap">
-    <div class="flow" id="flow1">
-      <button class="node active" data-step="free"><span class="n">1</span><b>Free Time starts</b><em>Orient yourself</em></button>
-      <div class="arrow">›</div>
-      <button class="node" data-step="zero"><span class="n">2</span><b>Zero-turn value</b><em>Before spending anything</em></button>
-      <div class="arrow">›</div>
-      <button class="node" data-step="spend"><span class="n">3</span><b>Spend Turns</b><em>Inns / Arena / Temple</em></button>
-      <div class="arrow">›</div>
-      <button class="node" data-step="world"><span class="n">4</span><b>World map</b><em>Towns · dungeons · skirmishes</em></button>
-      <div class="arrow">›</div>
-      <button class="node" data-step="prep"><span class="n">5</span><b>Battle prep</b><em>60-second sanity check</em></button>
-      <div class="arrow">›</div>
-      <button class="node" data-step="battle"><span class="n">6</span><b>Match or Clash</b><em>Fight → repeat</em></button>
-      <div class="arrow">↺</div>
-    </div>
-  </div>
-
-  <div class="detail" id="detail1"></div>
-
-  <div class="handoff">
-    <strong>Remember</strong>
-    <div class="path">
-      <span class="pill key">One autosave</span><span>·</span>
-      <span class="pill">Fortuna's Blessing rewinds moves, not mistakes in planning</span><span>·</span>
-      <span class="pill">Heroes save in parallel</span>
-    </div>
-    <div class="callout"><b>Core rule:</b> push one Hero route to a natural pause before seriously progressing another. The Games run on a clock — ~11 in-game months from preliminaries to the final match deadline on the 27th of the 11th month.</div>
+    <div class="flow" id="flow1"></div>
+    <div class="detail" id="detail1"></div>
   </div>
 </section>
 
 <section id="p2" class="page">
-  <div class="hero-card">
-    <h2>Part II: after the timeskip (1454)</h2>
-    <p>The Games are over; the war against Balor's forces begins. Chapter-to-chapter thinking replaces the Dagsion loop. <i>Section stays sparse until late-game details are verified — the game just launched.</i></p>
-  </div>
+  <div class="section">
+    <h2>After the timeskip (1454)</h2>
+    <p>The calendar loop is gone; the war plays out chapter to chapter. Notes here stay general until community guides have covered the chapters.</p>
 
-  <div class="flow-wrap">
-    <div class="flow" id="flow2" style="min-width:650px">
-      <button class="node active" data-step="p2prep"><span class="n">1</span><b>Preparation</b><em>Roster / gear / classes</em></button>
-      <div class="arrow">›</div>
-      <button class="node" data-step="p2chapter"><span class="n">2</span><b>Chapter check</b><em>What's special here?</em></button>
-      <div class="arrow">›</div>
-      <button class="node" data-step="p2battle"><span class="n">3</span><b>Battle</b><em>Execute</em></button>
-      <div class="arrow">›</div>
-      <button class="node" data-step="p2after"><span class="n">4</span><b>Next chapter</b><em>Adjust, don't grind blindly</em></button>
-      <div class="arrow">↺</div>
-    </div>
-  </div>
-
-  <div class="detail" id="detail2"></div>
-
-  <div class="handoff">
-    <strong>Structural shift</strong>
-    <div class="callout">The timeskip jumps you from 1449 to 1454. Don't carry your weekly Dagsion routine into Part II — there is no Free Time calendar loop to optimize anymore.</div>
+    <div class="flow" id="flow2"></div>
+    <div class="detail" id="detail2"></div>
+    <div class="callout">Don't carry the Dagsion weekly routine into Part II — there's no Free Time economy anymore.</div>
   </div>
 </section>
 
 <section id="always" class="page">
-  <div class="hero-card">
-    <h2>Always useful</h2>
-    <p>Small decision flows that apply across the whole game.</p>
-  </div>
-
-  <div class="grid">
-    <div class="mini-card">
-      <h3>Blaze Arts discipline</h3>
-      <div class="mini-flow">
-        <div class="step">Hero-only super moves: cost <strong>HP + the Blaze gauge</strong></div><div class="down">↓</div>
-        <div class="step">Overuse halves <strong>max HP for the rest of the battle</strong></div><div class="down">↓</div>
-        <div class="step">Save them for: boss kills, swarm clears, map-swing moments</div>
+  <div class="section">
+    <h2>Reference</h2>
+    <p>Quick answers that apply anywhere in the game.</p>
+    <div class="cards">
+      <div class="card">
+        <h3>Blaze Arts</h3>
+        <ul>
+          <li>Hero-only abilities that cost HP and the Blaze gauge.</li>
+          <li>Overuse halves max HP for the rest of the battle.</li>
+          <li>Best spent on boss kills or large groups, not chip damage.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Fortuna's Blessing</h3>
+        <ul>
+          <li>Rewinds to any earlier point in the battle.</li>
+          <li>Rewind early — cheap fixes beat late panic.</li>
+          <li>If you're rewinding constantly, rethink the plan instead.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Weapons</h3>
+        <ul>
+          <li>Combat Arts cost durability — decide in prep, not mid-fight.</li>
+          <li>Enhance at the Shopping Arcade with dungeon materials.</li>
+          <li>Unique weapons need two proficiencies and carry a Curse stat (e.g. Veroquine: B sword + C axe).</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Dungeons & towns</h3>
+        <ul>
+          <li>Dungeons send a real-time 4-unit squad, then turn-based Clashes.</li>
+          <li>Bank Link Points in Clashes for combo attacks.</li>
+          <li>Dungeon materials fund weapon enhancement; towns have skirmishes and supplies.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Turns & recruiting</h3>
+        <ul>
+          <li>Free Time: quests first, then Arena training, then exploration.</li>
+          <li>Temple Row blessings are nearly always worth a stop.</li>
+          <li>Gifts start a bond; shared meals at inns grow it.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Classes</h3>
+        <ul>
+          <li>Exams have three tiers: Beginner, Specialty (level 10+), Advanced (around level 35 + Renown 8).</li>
+          <li>Exams can fail — check thresholds before spending.</li>
+          <li>Arena training raises proficiencies, including the new Infantry type.</li>
+        </ul>
       </div>
     </div>
-
-    <div class="mini-card">
-      <h3>Fortuna's Blessing</h3>
-      <div class="mini-flow">
-        <div class="step">Rewind to any earlier point after a move</div><div class="down">↓</div>
-        <div class="step">Rewind <strong>cheaply, early</strong> — fix bad positioning immediately</div><div class="down">↓</div>
-        <div class="step">If you're rewinding constantly, the plan is wrong, not the execution</div>
-      </div>
-    </div>
-
-    <div class="mini-card">
-      <h3>Weapon durability</h3>
-      <div class="mini-flow">
-        <div class="step">Combat Arts burn durability — budget them</div><div class="down">↓</div>
-        <div class="step">Enhance/refine at the <strong>Shopping Arcade</strong> with dungeon materials</div><div class="down">↓</div>
-        <div class="step">Unique weapons need <strong>dual proficiencies</strong> (e.g. Veroquine: B Sword + C Axe) and carry a Curse stat</div>
-      </div>
-    </div>
-
-    <div class="mini-card">
-      <h3>Dungeon squad (Clashes)</h3>
-      <div class="mini-flow">
-        <div class="step">Real-time exploration with a <strong>4-unit squad</strong></div><div class="down">↓</div>
-        <div class="step">Clashes = turn-based party fights; build <strong>Link Points</strong> for combo attacks</div><div class="down">↓</div>
-        <div class="step">You can speed up or skip — but materials fund weapon enhancement, don't skip everything</div>
-      </div>
-    </div>
-
-    <div class="mini-card">
-      <h3>Recruiting / supports</h3>
-      <div class="mini-flow">
-        <div class="step">Gifts to start a bond, <strong>shared meals at inns</strong> to scale it</div><div class="down">↓</div>
-        <div class="step">Support conversations happen through inn time</div><div class="down">↓</div>
-        <div class="step">Recruiting at Certification time? Check the requirement before spending turns elsewhere</div>
-      </div>
-    </div>
-
-    <div class="mini-card">
-      <h3>Free Time turn economy</h3>
-      <div class="mini-flow">
-        <div class="step"><strong>1 day = 4 turns</strong> — think in turns, not days</div><div class="down">↓</div>
-        <div class="step">Quest deadlines first, then Arena proficiencies, then exploration</div><div class="down">↓</div>
-        <div class="step">Temple Row blessings: free buffs for the next battle — nearly always worth it</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="legend">
-    <span><i class="dot d-gold"></i>priority / persistent value</span>
-    <span><i class="dot d-red"></i>potentially costly mistake</span>
-    <span><i class="dot d-green"></i>good efficiency play</span>
   </div>
 </section>
 
 <section id="tracker" class="page">
-  <div class="hero-card">
-    <h2>My progress</h2>
-    <p>A lightweight tracker at your own pace. Hero notes autosave to this browser. Watch dates get set the first time you type a note for that Hero.</p>
+  <div class="section">
+    <h2>Progress</h2>
+    <p>Chapter markers and notes for each hero. Everything stays in this browser; use <em>Backup / restore</em> to move it to another device.</p>
+    <div class="trk" id="trkGrid"></div>
   </div>
-
-  <div class="trk" id="trkGrid"></div>
-
-  <div class="handoff">
-    <strong>Backup</strong>
-    <div class="callout">Everything here lives in your browser's local storage. Use <b>Save backup / restore</b> (top right) to export a file or paste-restore on another device. Corrupt data is paused, never silently wiped — a one-step rollback is kept.</div>
-  </div>
+  <div class="callout">Hero notes also show while you play their route in the Heroic Games tab.</div>
 </section>
 
 <footer>
-  Fortune's Weave Companion · unofficial fan tool, not affiliated with Nintendo / Intelligent Systems / Koei Tecmo · <a href="https://ko-fi.com/K3K11RWTSL" target="_blank" rel="noopener">Support on Ko-fi</a> · sources: Nintendo Direct, Serenes Forest, Fire Emblem Wiki · <a href="#" id="aboutLink">about</a>
+  Unofficial fan tool, not affiliated with Nintendo, Intelligent Systems, or Koei Tecmo.
+  <a href="https://ko-fi.com/K3K11RWTSL" target="_blank" rel="noopener">Support on Ko-fi</a>.
+  <a href="#" id="aboutLink">About</a>
 </footer>
 </div>
 
 <dialog id="syncDlg">
-  <h3>Save backup / restore</h3>
-  <p>Copy this to move progress to another device, or paste a backup below to restore. Restoring replaces current data (a one-step rollback of the previous state is kept automatically).</p>
+  <h3>Backup / restore</h3>
+  <p>Copy this text to move your progress, or paste a previous backup and press Restore.</p>
   <textarea id="syncData" spellcheck="false"></textarea>
   <div class="dlg-actions">
-    <button class="btn ghost" id="copyBtn">Copy</button>
-    <button class="btn ghost" id="downloadBtn">Download .json</button>
-    <button class="btn" id="importBtn">Restore from this text</button>
-    <button class="btn ghost" id="closeDlg">Close</button>
+    <button id="copyBtn">Copy</button>
+    <button id="downloadBtn">Download file</button>
+    <button id="importBtn">Restore</button>
+    <button id="closeDlg">Close</button>
   </div>
-  <p id="syncMsg" style="margin:8px 0 0"></p>
+  <p id="syncMsg" style="margin:8px 0 0;font-size:13px"></p>
 </dialog>
 
 <dialog id="aboutDlg">
-  <h3>About this companion</h3>
-  <p>Free, ad-free, no account. Made by a fan, inspired by the Persona Trackers project. Progress saves only in your browser; nothing is uploaded anywhere.</p>
-  <p>All information is spoiler-light and sourced from official Nintendo materials and community wikis at launch. It will grow as the community verifies late-game details.</p>
-  <div class="dlg-actions"><button class="btn" id="closeAbout">Close</button></div>
+  <h3>About</h3>
+  <p>A free fan companion, inspired by the Persona Trackers project. Progress is stored only in your browser. Information is collected from official materials and community wikis; it will grow as guides verify more of the late game.</p>
+  <div class="dlg-actions"><button id="closeAbout">Close</button></div>
 </dialog>
 
 <script>
 const HEROES=[
- {id:'cai',name:'Cai',who:'Free his father Castor from imprisonment. Tames mounts on the world map.'},
- {id:'dietrich',name:'Dietrich',who:'Fódlan noble chasing strong foes; relic Answerer; reveals enemies while exploring.'},
- {id:'theodora',name:'Theodora',who:'Queen of Saramis; restores Yu Phas; recruits soldiers to aid exploration and combat.'},
- {id:'leda',name:'Leda',who:'Dancer-musician hunting Bertrand; performs at inns for extra rewards.'},
- {id:'eshmel',name:'Eshmel',who:'Your avatar, Herald of the Pale Raven. Solo path faces Balor directly.'}
+ {id:'cai',      name:'Cai',      who:'Tames mounts on the world map.'},
+ {id:'dietrich', name:'Dietrich', who:'Reveals hidden enemies while exploring.'},
+ {id:'theodora', name:'Theodora', who:'Recruits soldiers to aid exploration and combat.'},
+ {id:'leda',     name:'Leda',     who:'Performs at inns for extra rewards.'},
+ {id:'eshmel',   name:'Eshmel',   who:'Your avatar; the solo path faces Balor directly.'}
 ];
 
 const routeText={
- cai:"<strong>Cai:</strong> his route opens the Games with the preliminary matches. His world-map ability <strong>tames mounts</strong> — use it whenever a wild mount shows up; mounts persist for future chapters.",
- dietrich:"<strong>Dietrich:</strong> reveals hidden enemies while exploring the world map. His relic <strong>Answerer</strong> and teleport-style Blaze Art reward aggressive positioning — read range overlays before committing.",
- theodora:"<strong>Theodora:</strong> recruits soldiers on the world map to aid exploration and battles. Gambits and her earth-style Blaze Art (Earthen Throw) make her strong at control — deploy for control, not just damage.",
- leda:"<strong>Leda:</strong> performs at inns for extra rewards — fold performances into every inn visit rather than treating it as flavor. Her song buffs/summons are best saved for map swings.",
- eshmel:"<strong>Eshmel / solo path:</strong> the avatar route faces <strong>Balor</strong> without the Heroes. Same turn economy applies, but with less roster depth — invest earlier in your core four."
+ cai:"Route focus: the opening preliminaries. His mount taming is free value — grab every wild mount; they carry over between chapters.",
+ dietrich:"Route focus: aggressive positioning. The Answerer and his teleport-style Blaze Art reward planning range overlays before committing.",
+ theodora:"Route focus: control. Gambits and her Earthen Throw Blaze Art make her strong at stalling — deploy for control, not just damage.",
+ leda:"Route focus: economy. Her inn performances stack with normal inn turns, so fold shows into every stop at an inn.",
+ eshmel:"Route focus: the solo path against Balor — same turn economy, but a smaller roster, so invest in your core team earlier."
 };
 
-const steps1={
- free:{
-  title:"Free Time just started",
-  badge:"Part I · start of loop",
-  text:"Time is turns: 1 in-game day = 4 turns. Orient before spending.",
-  tips:[
-   ["Check the calendar","Quest and qualifier deadlines can differ per route. Note anything due before you wander.","warn"],
-   ["Look at the map","New quest, town, dungeon, supply cache, or recruit target?","gold"],
-   ["Arena match day?","Watching bouts at the Arena on match days reveals opponent intel before you fight them.","good"],
-   ["Mission/qualifier ready?","Make sure the next main match requirement is already satisfied or cheaply reachable.",""]
-  ],
-  callout:"Deadlines are the spine of Part I. Everything else is optional optimization."
+const steps1=[
+ {id:'free',   n:'1', title:'Free time starts', sub:'orient before spending',
+  detail:{
+   text:'Time is the currency: one day is four turns, and travel eats into it.',
+   tips:[
+    ['Check the calendar','Quest and qualifier deadlines differ per route; note anything due soon.'],
+    ['Look at the map','New town quest, dungeon, supply cache, or recruit target?'],
+    ['Arena match day','Watching bouts on match days shows opponent intel early.']
+   ],
+   note:'Deadlines are the spine of Part I; everything else is optimization.'
+  }
  },
- zero:{
-  title:"Zero-turn value first",
-  badge:"Part I · efficiency",
-  text:"Clear whatever doesn't consume turns before spending any.",
-  tips:[
-   ["Shop checks","Shopping Arcade: restock tools, price out upcoming weapon enhancements.","good"],
-   ["Roster review","Any class-change or certification exam queued? Note requirements before spending turns.",""],
-   ["Read quest text","Some quests are satisfied incidentally by exploration you'd do anyway.","gold"],
-   ["Save-state awareness","One autosave slot — know your rewind (Fortuna's Blessing) situation before risky play.","warn"]
-  ],
-  callout:"Exact available activities vary by route and story point. The rule: inspect zero-turn options before spending a turn."
+ {id:'zero',   n:'2', title:'Zero-turn value', sub:'before spending anything',
+  detail:{
+   text:'Clear whatever doesn’t cost turns first.',
+   tips:[
+    ['Shopping Arcade','Restock tools and price out the next weapon enhancement.'],
+    ['Certification queue','Note exam requirements before spending turns elsewhere.'],
+    ['Quest text','Some quests complete incidentally on exploration you were doing anyway.']
+   ],
+   note:'Each turn should buy XP, materials, proficiency, or a deadline. If it buys none, keep the turn.'
+  }
  },
- spend:{
-  title:"Spend Turns deliberately",
-  badge:"Part I · inns & facilities",
-  text:"Inns let you use turns for XP and materials; facilities each do one job.",
-  tips:[
-   ["Inn turns","Rest, eat, and use turns for XP + materials. Add Leda performances for extra value.","good"],
-   ["Arena training","Raises proficiencies (incl. the new Infantry type) — costs gold + motivation. Feed your exam pipeline.","gold"],
-   ["Temple Row","Volunteer for blessings: buffs and damage reduction for the next battle. Nearly always worth it.","good"],
-   ["Certification exams","Three tiers — Beginner, Specialty (Lv10+), Advanced (~Lv35 + Renown 8). Can fail; check thresholds first.","warn"]
-  ],
-  callout:"Every turn should buy XP, materials, proficiency, or a deadline. If it buys none of those, keep the turn."
+ {id:'spend',  n:'3', title:'Spend turns', sub:'inns and facilities',
+  detail:{
+   text:'Inns turn turns into XP and materials; each facility does one job.',
+   tips:[
+    ['Inn','Use turns for XP and materials; Leda performances add extra value.'],
+    ['Arena','Raises proficiencies — feeds the class exam pipeline.'],
+    ['Temple Row','Blessings give buffs and damage reduction for the next battle.']
+   ],
+   note:'Advanced exams sit around level 35 plus Renown 8; Beginner and Specialty come earlier.'
+  }
  },
- world:{
-  title:"World map & dungeons",
-  badge:"Part I · exploration",
-  text:"Travel consumes time. Towns, skirmishes, caches and dungeons fill the map.",
-  tips:[
-   ["Route the trip","Plan a loop that hits towns + caches in one journey instead of two.","good"],
-   ["Dungeons: 4-unit squad","Real-time exploration, then turn-based Clashes with Link-Point combo attacks. Bring your actual team.","gold"],
-   ["Skirmishes","Towns host skirmish battles — decent XP/materials when you'll pass by anyway.",""],
-   ["Hero ability","Use your current Hero's map power (mounts / reveal / recruits / performances) — it's free value.","good"]
-  ],
-  callout:"Dungeon materials fund weapon enhancement at the Arcade — this is the economy loop of Part I."
+ {id:'world',  n:'4', title:'World map', sub:'towns, dungeons, skirmishes',
+  detail:{
+   text:'Routing matters because travel consumes time.',
+   tips:[
+    ['Plan the loop','Hit towns and caches in one trip instead of two.'],
+    ['Dungeons','Real-time squad exploration leads to Clashes with Link-Point combos.'],
+    ['Hero ability','Each hero has a free map power — use it while you’re there.']
+   ],
+   note:'Dungeon materials fund weapon enhancement — that’s the Part I economy loop.'
+  }
  },
- prep:{
-  title:"60-second battle prep",
-  badge:"Part I · pre-battle",
-  text:"Fix obvious problems; don't redesign the roster every match.",
-  tips:[
-   ["Gambits equipped?","Gambits and Crests are back. Give at least one unit a control gambit.","gold"],
-   ["Durability budget","Combat Arts cost durability — decide in prep, not mid-fight.",""],
-   ["Blaze plan","Who triggers the Blaze Art this map, and on what? Remember the max-HP penalty for overuse.","warn"],
-   ["Temple blessing active?","Don't forget to grab it before deploying if the fight matters.","good"]
-  ],
-  callout:"Mouse control (Joy-Con 2) makes forecast-checking fast — actually read counters before each engagement."
+ {id:'prep',   n:'5', title:'Battle prep', sub:'a 60-second check',
+  detail:{
+   text:'Fix the obvious; don’t redesign the roster every match.',
+   tips:[
+    ['Gambits','Give at least one unit a control gambit; Crests are back.'],
+    ['Durability','Budget Combat Arts in advance.'],
+    ['Blaze plan','Decide who triggers the Blaze Art and on what — remember the max-HP penalty.']
+   ],
+   note:'Mouse control makes forecast-checking fast; read counters before every engagement.'
+  }
  },
- battle:{
-  title:"Match or Clash",
-  badge:"Part I · combat",
-  text:"Fights are Matches (grid) or Clashes (party, Link combos). Then the loop restarts.",
-  tips:[
-   ["Forecast first","Check counters and speed every engagement — don't trust FE muscle memory.",""],
-   ["Link combos in Clashes","Bank Link Points and cash them for combo attacks on priority targets.","good"],
-   ["Blessing rewinds","Rewind early and cheaply; late full-mess rewinds waste your time more than the game's.","good"],
-   ["Blaze for swings","Hero Blaze Arts are for boss kills and swarm clears — not chip damage.","gold"]
-  ],
-  callout:"After the battle, back to step 1. Nothing here is meant to be permanently checked off."
+ {id:'battle', n:'6', title:'Match or Clash', sub:'fight, then the loop repeats',
+  detail:{
+   text:'Grid Matches and party Clashes share the same fundamentals.',
+   tips:[
+    ['Forecast','Check counters and speed every time.'],
+    ['Link combos','Bank Link Points in Clashes and cash them on priority targets.'],
+    ['Blaze timing','Save hero supers for boss kills and swarms.']
+   ],
+   note:'After the battle you’re back at step 1 — nothing here is meant to be crossed off.'
+  }
  }
-};
+];
 
-const steps2={
- p2prep:{
-  title:"Part II preparation",badge:"Post-timeskip",text:"The loop is now about roster quality, not calendar optimization.",
-  tips:[
-   ["Review the roster","Five years passed in-story — check who actually has a role now.","gold"],
-   ["Fix gear","Enhance/refine only what the deployed team needs.","good"],
-   ["Class audit","Harvest useful abilities from exam classes instead of one permanent class.",""],
-   ["Parallel Hero progress","Time-travel between Hero paths if you stalled one — their progress saves separately.","good"]
-  ],
-  callout:"Don't look for the Part-I weekly loop; the war is chapter-to-chapter."
- },
- p2chapter:{
-  title:"Check this chapter",badge:"Post-timeskip",text:"Ask what is special about this map before deploying.",
-  tips:[
-   ["Map gimmick?","Terrain, reinforcements, or unusual objectives change priorities.",""],
-   ["Deploy for the objective","Not just your highest-level units.","gold"],
-   ["Missable interaction?","Handle chapter-specific opportunities before finishing the map.","warn"],
-   ["Blaze budget","Decide the hero-super timing before the map starts.",""]
-  ],
-  callout:"This section stays high-level until chapter data is community-verified — the game just launched."
- },
- p2battle:{
-  title:"Battle",badge:"Execute",text:"Apply the evergreen combat flows.",
-  tips:[
-   ["Forecast first","Counters, speed, durability cost.",""],
-   ["Control before damage","Gambits and Blaze stuns buy safe windows.","good"],
-   ["Spend arts intentionally","Durability is a resource, not a reason to never use them.",""],
-   ["Adapt","Change deployment or roles instead of grinding reflexively.","gold"]
-  ],
-  callout:"The 'Always useful' tab is the quick reference during combat."
- },
- p2after:{
-  title:"Between chapters",badge:"Reset",text:"Small adjustments, then move on.",
-  tips:[
-   ["Who underperformed?","Stats, positioning, or wrong role?",""],
-   ["New class option?","Take upgrades with a clear purpose.","gold"],
-   ["Materials going somewhere?","Point dungeon income at your core team's weapons.","good"],
-   ["Don't overgrind","The war is structured to keep moving.",""]
-  ],
-  callout:"Then back to Preparation for the next chapter."
- }
-};
+const steps2=[
+ {id:'p2prep',   n:'1', title:'Preparation', sub:'roster, gear, classes',
+  detail:{text:'The loop cares about roster quality now, not calendar optimization.',
+   tips:[
+    ['Roster','Check who actually has a role on this chapter’s map.'],
+    ['Classes','Borrow useful abilities from exam classes instead of settling on one.'],
+    ['Parallel heroes','Stalled a route? Their progress saves separately — time-travel back to it.']
+   ],
+   note:'Five years pass in-story between parts; re-check the roster after the timeskip.'}},
+ {id:'p2chapter',n:'2', title:'Chapter check', sub:'what’s special here',
+  detail:{text:'Read the map before deploying.',
+   tips:[
+    ['Gimmick','Terrain, reinforcements, or unusual objectives change priorities.'],
+    ['Deploy for the objective','Not just for the highest-level units.'],
+    ['Blaze budget','Pick the hero-super timing before the map starts.']
+   ],
+   note:'This section stays general until chapter data is community-verified.'}},
+ {id:'p2battle', n:'3', title:'Battle', sub:'execute',
+  detail:{text:'Apply the reference tab during combat.',
+   tips:[
+    ['Forecast first','Counters, speed, durability cost.'],
+    ['Control before damage','Gambits buy safe attack windows.'],
+    ['Adapt','Change deployment rather than grinding reflexively.']
+   ],
+   note:'The Reference tab is the quick lookup here.'}},
+ {id:'p2after',  n:'4', title:'Next chapter', sub:'adjust and move on',
+  detail:{text:'Small adjustments between maps.',
+   tips:[
+    ['Who underperformed?','Stats, positioning, or the wrong role?'],
+    ['Materials','Point dungeon income at your core team’s weapons.'],
+    ['Don’t overgrind','The war is structured to keep moving.']
+   ],
+   note:'Then back to Preparation for the next chapter.'}}
+];
 
-function renderDetail(target,data){
- const el=document.getElementById(target);
- el.innerHTML=`
-  <div class="detail-head">
-   <div><h2>${data.title}</h2><p>${data.text}</p></div>
-   <span class="badge">${data.badge}</span>
-  </div>
-  <div class="todo">
-   ${data.tips.map(([a,b,c])=>`<div class="tip ${c||''}"><strong>${a}</strong><span>${b}</span></div>`).join('')}
-  </div>
-  <div class="callout">${data.callout}</div>`;
-}
-
-function bindFlow(flowId,detailId,dataset,initial){
+/* loop rendering */
+function renderFlow(flowId,detailId,steps){
  const flow=document.getElementById(flowId);
+ const list=document.getElementById(detailId);
+ flow.innerHTML=steps.map(s=>
+  `<button class="node" data-step="${s.id}"><span class="n">${s.n}</span><b>${s.title}</b><em>${s.sub}</em></button>`).join('');
  flow.addEventListener('click',e=>{
-  const node=e.target.closest('.node'); if(!node) return;
-  flow.querySelectorAll('.node').forEach(n=>n.classList.remove('active'));
-  node.classList.add('active');
-  renderDetail(detailId,dataset[node.dataset.step]);
+  const b=e.target.closest('.node'); if(!b) return;
+  flow.querySelectorAll('.node').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  const s=steps.find(x=>x.id===b.dataset.step);
+  renderDetail(list,s.detail);
  });
- renderDetail(detailId,dataset[initial]);
+ renderDetail(list,steps[0].detail);
+ flow.querySelector('.node').classList.add('active');
 }
+function renderDetail(list,d){
+ list.innerHTML=`
+  <span class="badge">${d.text}</span>
+  <ul class="tips">${d.tips.map(([a,b])=>`<li><strong>${a}</strong> — <span>${b}</span></li>`).join('')}</ul>
+  <div class="callout">${d.note}</div>`;
+}
+renderFlow('flow1','detail1',steps1);
+renderFlow('flow2','detail2',steps2);
 
-document.querySelectorAll('.tab').forEach(t=>{
+/* tabs */
+document.querySelectorAll('nav button').forEach(t=>{
  t.addEventListener('click',()=>{
-  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
   t.classList.add('active');
   document.getElementById(t.dataset.page).classList.add('active');
@@ -596,99 +456,98 @@ document.querySelectorAll('.tab').forEach(t=>{
  });
 });
 
-document.querySelectorAll('.route').forEach(r=>{
- r.addEventListener('click',()=>{
-  document.querySelectorAll('.route').forEach(x=>x.classList.remove('active'));
-  r.classList.add('active');
-  document.getElementById('routeCard').innerHTML=routeText[r.dataset.route];
-  localStorage.setItem('fwc-route',r.dataset.route);
- });
+/* hero picks */
+const picks=document.getElementById('routePicks');
+picks.innerHTML=HEROES.map(h=>`<button data-route="${h.id}">${h.name}</button>`).join('');
+picks.addEventListener('click',e=>{
+ const b=e.target.closest('button'); if(!b) return;
+ picks.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+ b.classList.add('active');
+ document.getElementById('routeCard').textContent=routeText[b.dataset.route];
+ localStorage.setItem('fwc-route',b.dataset.route);
 });
 
-/* ---- tracker ---- */
+/* tracker */
 const KEY='fwc-progress-v1', BACKUP_KEY='fwc-progress-backup-v1';
 function loadState(){
  try{const raw=localStorage.getItem(KEY);return raw?JSON.parse(raw):{}}catch(e){return {}}
 }
 let state=loadState();
-let paused=false;
 function saveState(){
- if(paused) return;
- try{localStorage.setItem(KEY,JSON.stringify(state));setSaveStatus('Saved ✓')}
+ try{localStorage.setItem(KEY,JSON.stringify(state));setStatus('saved')}
  catch(e){
   try{localStorage.setItem(BACKUP_KEY,JSON.stringify(state))}catch(e2){}
-  paused=true;setSaveStatus('⚠ Autosave paused — export a backup now');
+  setStatus('autosave paused — export a backup');
  }
 }
-function setSaveStatus(t){document.getElementById('saveStatus').textContent=t}
+function setStatus(t){document.getElementById('saveStatus').textContent=t}
 
 const grid=document.getElementById('trkGrid');
 grid.innerHTML=HEROES.map(h=>`
- <div class="trk-hero" data-hero="${h.id}">
-  <h3>${h.name}</h3>
-  <p class="who">${h.who}</p>
-  <div class="trk-row"><label>Current chapter</label><span class="pct" data-out="${h.id}">${state[h.id]?.ch||'—'}</span></div>
-  <input type="range" min="0" max="30" value="${state[h.id]?.chNum||0}" data-ch="${h.id}" />
-  <textarea placeholder="Notes: recruits, deadlines, class plans…" data-note="${h.id}">${state[h.id]?.note||''}</textarea>
+ <div class="card" data-hero="${h.id}">
+  <h3>${h.name} <span style="color:var(--muted);font-weight:400;font-size:13px">— ${h.who}</span></h3>
+  <div class="trk-row"><input type="range" min="0" max="30" value="${state[h.id]?.chNum||0}" data-ch="${h.id}" /><span class="pct" data-out="${h.id}">${state[h.id]?.ch||'—'}</span></div>
+  <textarea placeholder="Notes — recruits, deadlines, class plans…" data-note="${h.id}">${state[h.id]?.note||''}</textarea>
  </div>`).join('');
 
 grid.addEventListener('input',e=>{
- const t=e.target;
- const hero=t.dataset.ch||t.dataset.note;
+ const t=e.target, hero=t.dataset.ch||t.dataset.note;
  if(!hero) return;
  state[hero]=state[hero]||{};
- if(t.dataset.ch){state[hero].chNum=+t.value;state[hero].ch=t.value==='0'?'—':('Ch '+t.value);
-  grid.querySelector(`[data-out="${hero}"]`).textContent=state[hero].ch;}
- if(t.dataset.note){state[hero].note=t.value;
-  if(!state[hero].since){state[hero].since=new Date().toISOString().slice(0,10);
-   t.placeholder=`Notes (watch set ${state[hero].since})`}}
+ if(t.dataset.ch){
+  state[hero].chNum=+t.value;
+  state[hero].ch=t.value==='0'?'—':'Ch '+t.value;
+  grid.querySelector(`[data-out="${hero}"]`).textContent=state[hero].ch;
+ }
+ if(t.dataset.note) state[hero].note=t.value;
  saveState();
 });
 
-/* ---- sync dialog ---- */
+/* sync */
 const dlg=document.getElementById('syncDlg'),msg=document.getElementById('syncMsg');
-document.getElementById('syncBtn').onclick=()=>{msg.textContent='';msg.className='';
- document.getElementById('syncData').value=JSON.stringify(state,null,1);dlg.showModal()};
+document.getElementById('syncBtn').onclick=()=>{
+ msg.textContent='';
+ document.getElementById('syncData').value=JSON.stringify(state,null,1);
+ dlg.showModal();
+};
 document.getElementById('closeDlg').onclick=()=>dlg.close();
 document.getElementById('copyBtn').onclick=async()=>{
- const ta=document.getElementById('syncData');
- try{await navigator.clipboard.writeText(ta.value);msg.textContent='Copied ✓';msg.className=''}
- catch(e){ta.select();msg.textContent='Press Ctrl+C to copy';msg.className=''}
+ try{await navigator.clipboard.writeText(document.getElementById('syncData').value);msg.textContent='Copied.'}
+ catch(e){document.getElementById('syncData').select();msg.textContent='Press Ctrl+C to copy'}
 };
 document.getElementById('downloadBtn').onclick=()=>{
  const a=document.createElement('a');
  a.href=URL.createObjectURL(new Blob([document.getElementById('syncData').value],{type:'application/json'}));
- a.download='fortunes-weave-companion-backup.json';a.click();
+ a.download='fortunes-weave-companion-backup.json';
+ a.click();
 };
 document.getElementById('importBtn').onclick=()=>{
  const raw=document.getElementById('syncData').value;
  try{
   const data=JSON.parse(raw);
-  if(typeof data!=='object'||data===null) throw new Error('bad');
+  if(typeof data!=='object'||data===null) throw new Error();
   try{localStorage.setItem(BACKUP_KEY,JSON.stringify(state))}catch(e){}
-  state=data;saveState();location.reload();
- }catch(e){msg.textContent='That text is not a valid backup — nothing was changed.';msg.className='err'}
+  state=data; saveState(); location.reload();
+ }catch(e){
+  msg.textContent='That isn’t valid backup data — nothing was changed.';
+  msg.className='err';
+ }
 };
-
-/* restore pause flag */
-if(paused) setSaveStatus('⚠ Autosave paused — export a backup now');
-window.addEventListener('load',()=>{if(!paused)setSaveStatus('Saved ✓')});
 
 /* about */
 const about=document.getElementById('aboutDlg');
 document.getElementById('aboutLink').onclick=e=>{e.preventDefault();about.showModal()};
 document.getElementById('closeAbout').onclick=()=>about.close();
 
-bindFlow('flow1','detail1',steps1,'free');
-bindFlow('flow2','detail2',steps2,'p2prep');
-
+/* restore state */
 const savedRoute=localStorage.getItem('fwc-route')||'cai';
-const routeBtn=[...document.querySelectorAll('.route')].find(x=>x.dataset.route===savedRoute)||document.querySelector('.route');
-routeBtn.click();
+const routeBtn=picks.querySelector(`[data-route="${savedRoute}"]`)||picks.querySelector('button');
+routeBtn.classList.add('active');
+document.getElementById('routeCard').textContent=routeText[routeBtn.dataset.route];
 
 const savedPart=localStorage.getItem('fwc-part');
 if(savedPart&&savedPart!=='start'){
- const tab=[...document.querySelectorAll('.tab')].find(x=>x.dataset.page===savedPart);
+ const tab=[...document.querySelectorAll('nav button')].find(x=>x.dataset.page===savedPart);
  if(tab) tab.click();
 }
 </script>
