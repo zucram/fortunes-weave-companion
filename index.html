@@ -73,7 +73,10 @@ header .actions button{
   padding:6px 12px;cursor:pointer;color:var(--ink)
 }
 header .actions button:hover{border-color:var(--line2)}
-#saveStatus{color:var(--muted)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom));
+  background:#3d3524;color:#f5eeda;font-size:12px;padding:7px 14px;border-radius:999px;
+  opacity:0;transition:opacity .4s;pointer-events:none;z-index:50}
+.toast.show{opacity:1}
 
 nav{max-width:940px;margin:0 auto;display:flex;gap:6px;padding:0 0 8px;border-bottom:1px solid var(--line);
   display:flex;gap:6px;padding:10px 0;
@@ -212,6 +215,7 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
 </head>
 <body>
 <div class="wrap">
+<div class="toast" id="saveStatus"></div>
 
 <div class="topbar">
 <header>
@@ -223,10 +227,9 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
     </span>
   </a>
   <div class="actions">
-    <span id="saveStatus" style="color:var(--muted)"></span>
     <button id="syncBtn">Backup / restore</button>
     <a class="chip-link" href="https://ko-fi.com/K3K11RWTSL" target="_blank" rel="noopener">Ko-fi</a>
-    <button id="menuBtn" aria-label="Menu">Menu</button>
+    <button id="menuBtn">Menu ▾</button>
   </div>
 </header>
 <nav>
@@ -410,7 +413,7 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
   Unofficial fan tool, not affiliated with Nintendo, Intelligent Systems, or Koei Tecmo.
   <a href="https://ko-fi.com/K3K11RWTSL" target="_blank" rel="noopener">Support on Ko-fi</a>.
   <a href="#" id="aboutLink">About</a>
-  <span style="margin-left:8px">build 16 — 17 Sep</span>
+  <span style="margin-left:8px">build 18 — 17 Sep</span>
   <p style="margin:8px 0 0">Umami measures visits and feature use. Notes, checkmarks and save contents stay in your browser and are never sent in events.</p>
 </footer>
 </div>
@@ -770,7 +773,14 @@ function saveState(){
  store.set(KEY,JSON.stringify(state));
  setStatus('saved');
 }
-function setStatus(t){document.getElementById('saveStatus').textContent=t}
+let toastTimer;
+function setStatus(t){
+ const el=document.getElementById('saveStatus');
+ if(!el) return;
+ el.textContent=t; el.classList.add('show');
+ clearTimeout(toastTimer);
+ toastTimer=setTimeout(()=>el.classList.remove('show'),1500);
+}
 
 function buildTrk(){
  const h=HEROES.find(x=>x.id===currentHero)||HEROES[0];
@@ -914,7 +924,14 @@ document.getElementById('laterList').innerHTML=LATER.map(([p,t])=>`<li><strong>$
 const about=document.getElementById('aboutDlg');
 document.getElementById('aboutLink').onclick=e=>{e.preventDefault();about.showModal();track('fw_about_opened')};
 document.getElementById('closeAbout').onclick=()=>about.close();
-document.getElementById('menuBtn').addEventListener('click',()=>document.querySelector('nav').classList.toggle('menu-open'));
+/* menu: toggled by Menu button; open by default (preference remembered, works even if other listeners fail) */
+document.addEventListener('click',e=>{
+ if(!e.target.closest('#menuBtn')) return;
+ const navEl=document.querySelector('nav');
+ const open=navEl.classList.toggle('menu-open');
+ store.set('fwc-menu',open?'open':'closed');
+ if(navigator.vibrate) navigator.vibrate(8);
+});
 
 /* support links: header and footer Ko-fi */
 document.querySelectorAll('a[href*="ko-fi.com"]').forEach(a=>{
@@ -922,6 +939,7 @@ document.querySelectorAll('a[href*="ko-fi.com"]').forEach(a=>{
 });
 
 /* restore state */
+if(store.get('fwc-menu')!=='closed') document.querySelector('nav').classList.add('menu-open');
 selectHero(store.get('fwc-route')||'cai');
 
 const savedPart=store.get('fwc-part');
