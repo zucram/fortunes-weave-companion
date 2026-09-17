@@ -20,5 +20,6 @@ Nintendo Direct transcripts (via Gematsu), Nintendo's "Ask the Developer Vol. 23
 ## Notes
 
 - Unofficial fan tool; not affiliated with Nintendo, Intelligent Systems, or Koei Tecmo.
+- The character thumbnails in `assets/` are official marketing assets from Nintendo's store page, © Nintendo / Intelligent Systems, used here without permission for non-commercial informational purposes; will be removed on request.
 - Donations via [Ko-fi](https://ko-fi.com/K3K11RWTSL).
 - Static single-file app (index.html) — no build step. Deployed on GitHub Pages from the repo root.
