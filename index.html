@@ -44,272 +44,483 @@
 :root{
   --bg:#faf7f2;--card:#fff;--ink:#2a2620;--muted:#6f6759;
   --line:#e4ddd0;--line2:#d3c9b6;--accent:#9a7a2e;--accent-soft:#f3ead6;
+  --ink-soft:#5d4c1e;--field:#fcfaf6;--hover:#f6f1e7;--shadow:0 1px 2px rgba(40,32,16,.05);
+  --sheet-shadow:0 -8px 30px rgba(40,32,16,.18);--ok:#3f6b46;--warn:#a4412f;
+  --tabbar-h:0px;
+}
+html[data-theme=dark]{
+  --bg:#17150f;--card:#211e17;--ink:#ece5d6;--muted:#a2998a;
+  --line:#332e24;--line2:#463f31;--accent:#d8b464;--accent-soft:#2f2718;
+  --ink-soft:#e3cd94;--field:#1b1912;--hover:#282318;--shadow:0 1px 2px rgba(0,0,0,.3);
+  --sheet-shadow:0 -8px 30px rgba(0,0,0,.5);--ok:#8fc39a;--warn:#e79684;
 }
 *{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
 body{
   margin:0;color:var(--ink);background:var(--bg);
   font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;
+  overflow-wrap:break-word;
 }
-button{font:inherit}
+button{font:inherit;color:inherit}
 a{color:var(--accent)}
-.logo-band{background:#141210;border-radius:12px;padding:20px;text-align:center;margin-bottom:20px}
-.logo-band img{max-width:min(360px,80%)}
-.logo-chip{background:#141210;border-radius:8px;padding:6px 10px;display:inline-flex;align-items:center}
-
-.logo-chip img{width:120px;height:auto;display:block}
-.wrap{max-width:940px;margin:0 auto;padding:20px 16px 60px}
-
-.topbar{background:var(--bg);padding:max(6px,env(safe-area-inset-top)) max(14px,env(safe-area-inset-right)) 0 max(14px,env(safe-area-inset-left))}
-header{display:flex;align-items:center;gap:12px;flex-wrap:wrap;max-width:940px;margin:0 auto;padding:6px 0 10px}
-.brand{display:flex;align-items:center;gap:10px;color:inherit;text-decoration:none}
-.brand strong{font-size:19px;display:block}
-.tagline{display:block;color:var(--muted);font-size:12px}
-.chip-link{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:7px 12px;min-height:38px;display:inline-flex;align-items:center;color:var(--accent);text-decoration:none}
-header .actions{display:flex;gap:8px;align-items:center;font-size:13px;justify-content:flex-end}
-header .actions a{text-decoration:none}
-header .actions button{
-  border:1px solid var(--line);background:var(--card);border-radius:8px;
-  padding:6px 12px;cursor:pointer;color:var(--ink)
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+/* ---------- app shell ---------- */
+.appbar{
+  position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--bg) 92%,transparent);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--line);
+  padding:max(6px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) 0 max(12px,env(safe-area-inset-left));
 }
-header .actions button:hover{border-color:var(--line2)}
-.trk-hud{border:1px solid var(--line);border-radius:10px;background:var(--card);padding:10px 12px}
-.trk-hud details textarea{width:100%;margin-top:8px;border:1px solid var(--line);border-radius:8px;background:#fcfaf6;padding:8px;font:13px/1.5 ui-monospace,monospace;min-height:64px;resize:vertical}
-.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom));
-  background:#3d3524;color:#f5eeda;font-size:12px;padding:7px 14px;border-radius:999px;
-  opacity:0;transition:opacity .4s;pointer-events:none;z-index:50}
-.toast.show{opacity:1}
+.appbar-in{max-width:960px;margin:0 auto;display:flex;align-items:center;gap:10px;padding:6px 0 8px}
+.brand{display:flex;align-items:center;gap:10px;color:inherit;text-decoration:none;min-width:0;flex:1}
+.brand img{width:104px;height:auto;display:block;border-radius:6px;background:#141210}
+html[data-theme=dark] .brand img{background:transparent}
+.brand-text{min-width:0}
+.brand strong{font-size:16px;display:block;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tagline{display:block;color:var(--muted);font-size:11.5px}
+.appbar .actions{display:flex;gap:6px;align-items:center;flex:none}
+.iconbtn{
+  border:1px solid var(--line);background:var(--card);border-radius:9px;cursor:pointer;
+  min-height:40px;min-width:40px;display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  padding:0 10px;font-size:13px;box-shadow:var(--shadow)
+}
+.iconbtn:hover{border-color:var(--line2);background:var(--hover)}
+.iconbtn svg{width:17px;height:17px;flex:none}
+.iconbtn .lbl{display:none}
+@media (min-width:760px){.iconbtn .lbl{display:inline}}
 
-nav{max-width:940px;margin:0 auto;display:flex;gap:6px;padding:0 0 8px;border-bottom:1px solid var(--line);
-  display:flex;gap:6px;padding:10px 0;
-  padding-left:max(12px,env(safe-area-inset-left));padding-right:max(12px,env(safe-area-inset-right));padding-top:max(10px,env(safe-area-inset-top));
-  overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-nav::-webkit-scrollbar{display:none}
-nav button{
-  flex:none;border:0;border-radius:8px;background:var(--card);
-  padding:9px 13px;cursor:pointer;color:var(--muted);font-size:14px;min-height:40px}
-nav button:hover{color:var(--ink)}
-nav button.active{color:var(--ink);font-weight:600;background:var(--accent-soft)}
-.page{display:none;padding-top:14px}
-.page.active{display:block}
+/* progress pill in the app bar — the one entry point to the tracker */
+.progress-pill{
+  border:1px solid var(--line2);background:var(--card);border-radius:999px;cursor:pointer;
+  display:inline-flex;align-items:center;gap:8px;padding:5px 12px 5px 6px;min-height:40px;
+  box-shadow:var(--shadow);max-width:52vw
+}
+.progress-pill:hover{background:var(--hover)}
+.progress-pill img{width:28px;height:28px;border-radius:50%;object-fit:cover;object-position:50% 18%;background:#141210;flex:none}
+.progress-pill .pp-t{text-align:left;min-width:0;line-height:1.15}
+.progress-pill .pp-hero{display:block;font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.progress-pill .pp-at{display:block;font-size:11px;color:var(--muted);white-space:nowrap}
 
-h2{font-size:19px;margin:6px 0 10px}
+/* ---------- tabs ---------- */
+.tabs{max-width:960px;margin:0 auto;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs [role=tab]{
+  flex:none;border:0;border-bottom:2px solid transparent;background:none;border-radius:8px 8px 0 0;
+  padding:9px 12px;cursor:pointer;color:var(--muted);font-size:14px;min-height:42px;white-space:nowrap
+}
+.tabs [role=tab]:hover{color:var(--ink);background:var(--hover)}
+.tabs [role=tab][aria-selected=true]{color:var(--ink);font-weight:600;border-bottom-color:var(--accent)}
+
+/* phone: tabs move to a bottom bar */
+.tabbar{display:none}
+@media (max-width:719px){
+  :root{--tabbar-h:calc(56px + env(safe-area-inset-bottom))}
+  .tabs{display:none}
+  .tabbar{
+    display:flex;position:fixed;left:0;right:0;bottom:0;z-index:40;
+    background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(10px);
+    border-top:1px solid var(--line);
+    padding:4px max(4px,env(safe-area-inset-left)) env(safe-area-inset-bottom) max(4px,env(safe-area-inset-right))
+  }
+  .tabbar [role=tab]{
+    flex:1;border:0;background:none;cursor:pointer;color:var(--muted);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+    padding:6px 2px;min-height:52px;border-radius:10px;font-size:11px;line-height:1
+  }
+  .tabbar [role=tab] svg{width:22px;height:22px}
+  .tabbar [role=tab][aria-selected=true]{color:var(--accent);font-weight:600}
+  .tabbar [role=tab][aria-selected=true] .tb-dot{opacity:1}
+  .tb-dot{width:4px;height:4px;border-radius:50%;background:currentColor;opacity:0;margin-top:1px}
+}
+
+.wrap{max-width:960px;margin:0 auto;padding:18px 16px calc(60px + var(--tabbar-h))}
+.page{display:none}
+.page.active{display:block;animation:fade .18s ease-out}
+@keyframes fade{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
+
+h1{font-size:22px;margin:0 0 4px;letter-spacing:-.01em}
+h2{font-size:19px;margin:0 0 4px;letter-spacing:-.01em}
+.page-lead{color:var(--muted);margin:0 0 18px;font-size:14.5px;max-width:66ch}
 .section{margin-bottom:26px}
-.section p{color:var(--muted);margin:0 0 12px}
-
-/* hero picks */
-.picks{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 8px}
-.picks button{
-  border:1px solid var(--line);background:var(--card);border-radius:8px;
-  padding:7px 13px;cursor:pointer;color:var(--muted)
+.section > p{color:var(--muted);margin:0 0 12px;max-width:66ch}
+.eyebrow{
+  display:block;font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 4px;font-weight:600
 }
-.picks button.active{background:var(--accent-soft);border-color:var(--accent);color:var(--ink)}
-.picks img.pp{width:24px;height:24px;object-fit:cover;border-radius:50%;vertical-align:-5px;margin-right:6px;background:#000}
-.picks button{display:inline-flex;align-items:center;gap:2px}
-#routeCard{color:var(--muted);font-size:14px;margin:4px 0 16px}
+h3.sec-h{font-size:15px;margin:22px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line)}
 
-/* loop steps */
-.flow{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;background:var(--card);overflow:hidden}
-.node{
-  display:flex;gap:12px;align-items:baseline;text-align:left;border:0;background:none;
-  padding:12px 16px;cursor:pointer;color:var(--ink);border-bottom:1px solid var(--line)
+/* ---------- hero / route picker ---------- */
+.hero-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.hero-card{
+  border:1px solid var(--line);background:var(--card);border-radius:11px;cursor:pointer;
+  padding:0;overflow:hidden;text-align:center;display:flex;flex-direction:column;align-items:stretch;
+  min-height:44px
 }
-.node:last-child{border-bottom:0}
-.node:hover{background:#f6f1e7}
-.node.active{background:var(--accent-soft)}
-.node .n{color:var(--muted);font-size:12px;width:16px;flex:none}
-.node b{font-weight:600}
-.node em{font-style:normal;color:var(--muted);font-size:13px;margin-left:.5em}
-.detail{margin-top:14px}
-.badge{color:var(--muted);font-size:12px;display:block;margin-bottom:8px}
-.tips{margin:0;padding:0;list-style:none;border:1px solid var(--line);border-radius:10px;background:var(--card)}
-.tips li.route-tip{background:var(--accent-soft)}
-.loop{margin:10px 0}
-.lstep{border:1px solid var(--line);border-radius:10px;background:var(--card);padding:12px 16px;margin-bottom:10px}
-.lstep h3{margin:0 0 4px;font-size:16px;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
-.lstep .n{color:var(--muted);font-size:12px;font-weight:400}
-.lstep .sub{color:var(--muted);font-size:13px;font-weight:400;margin-left:6px}
-.lead{color:var(--muted);font-size:14px;margin:0 0 8px}
-.lnote{color:#5d4c1e;font-size:13px;margin:8px 0 0;border-left:3px solid var(--accent);padding:4px 10px;background:var(--accent-soft);border-radius:0 8px 8px 0}
-.nav-short{display:none}
-.tips li{padding:10px 14px;border-bottom:1px solid var(--line)}
-.tips li:last-child{border-bottom:0}
-.tips li strong{font-weight:600}
-.tips li span{color:var(--muted);font-size:14px}
-.callout{
-  margin-top:12px;padding:10px 14px;background:var(--accent-soft);border-radius:8px;
-  font-size:14px;color:#5d4c1e
+.hero-card:hover{border-color:var(--line2)}
+/* portraits are tall 160x346 crops; each grid sets its own visible height */
+.hero-card img{width:100%;height:150px;object-fit:cover;object-position:50% 8%;display:block;background:#141210}
+.hero-card .hn{padding:7px 4px;font-size:13px;font-weight:600}
+.hero-card[aria-pressed=true]{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.hero-card[aria-pressed=true] .hn{background:var(--accent-soft);color:var(--ink-soft)}
+.hero-role{color:var(--muted);font-size:13px;margin:10px 0 0}
+/* the sheet shows all five routes above the chapter controls, so it crops shorter */
+#heroGridSheet{gap:6px}
+#heroGridSheet img{height:62px}
+#heroGridSheet .hn{font-size:10.5px;padding:5px 1px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:719px){
+  #heroGridOverview{grid-template-columns:repeat(3,1fr)}
+  #heroGridOverview img{height:116px}
 }
 
-/* reference grids */
-.cards{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.card{border:1px solid var(--line);border-radius:10px;background:var(--card);padding:14px 16px}
-.card h3{font-size:15px;margin:0 0 8px}
+/* segmented control */
+.seg{display:inline-flex;background:var(--field);border:1px solid var(--line);border-radius:10px;padding:3px;gap:2px;max-width:100%}
+.seg button{
+  border:0;background:none;border-radius:7px;cursor:pointer;color:var(--muted);
+  padding:8px 12px;font-size:13.5px;min-height:38px;white-space:nowrap;flex:1
+}
+.seg button[aria-pressed=true]{background:var(--card);color:var(--ink);font-weight:600;box-shadow:var(--shadow)}
+.seg.wide{display:flex;width:100%}
+
+/* chapter stepper */
+.chrow{display:flex;align-items:center;gap:10px;margin-top:12px}
+.chrow .step{
+  border:1px solid var(--line);background:var(--card);border-radius:9px;cursor:pointer;
+  width:44px;height:44px;flex:none;font-size:19px;line-height:1;display:inline-flex;align-items:center;justify-content:center
+}
+.chrow .step:hover{background:var(--hover)}
+.chrow .step:disabled{opacity:.4;cursor:default}
+.chrow .chnum{flex:1;text-align:center;font-variant-numeric:tabular-nums}
+.chrow .chnum b{display:block;font-size:20px;line-height:1.1}
+.chrow .chnum span{display:block;font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em}
+input[type=range]{width:100%;accent-color:var(--accent);height:32px}
+@media (max-width:719px){input[type=range]{height:44px}}
+
+/* ---------- cards ---------- */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+/* the overview's four facts read as a 2x2 block, not 3 + 1 orphan */
+.cards.two{grid-template-columns:1fr}
+@media (min-width:620px){.cards.two{grid-template-columns:1fr 1fr}}
+.card{border:1px solid var(--line);border-radius:12px;background:var(--card);padding:14px 16px;box-shadow:var(--shadow)}
+.card h3{font-size:15px;margin:0 0 8px;display:flex;align-items:center;gap:7px}
+.card h3 svg{width:16px;height:16px;color:var(--accent);flex:none}
 .card ul{margin:0;padding-left:18px;color:var(--muted);font-size:14px}
-.card ul li{margin:4px 0}
+.card ul li{margin:5px 0}
 .card ul li strong{color:var(--ink);font-weight:600}
-
-/* tracker */
-.trk{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.trk textarea, #trkSingle textarea{
-  width:100%;margin-top:8px;border:1px solid var(--line);border-radius:8px;background:#fcfaf6;
-  padding:8px;font:13px/1.5 ui-monospace,monospace;color:var(--ink);min-height:64px;resize:vertical
+.callout{
+  margin-top:12px;padding:11px 14px;background:var(--accent-soft);border-radius:10px;
+  font-size:13.5px;color:var(--ink-soft);display:flex;gap:9px;align-items:flex-start
 }
-.trk .card textarea:focus{outline:1px solid var(--line2)}
-.trk-row{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
-.trk-row input[type=range]{flex:1;accent-color:var(--accent)}
-.trk-row .k{font-size:13px;color:var(--muted);min-width:52px;text-transform:uppercase;letter-spacing:.06em}
-button.mini{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:6px 12px;cursor:pointer;color:var(--ink);min-height:38px}
-button.mini.act{background:var(--accent-soft);border-color:var(--accent);font-weight:600}
-.trk-row .pct{min-width:48px;text-align:right;font-variant-numeric:tabular-nums;color:var(--ink)}
+.callout svg{width:16px;height:16px;flex:none;margin-top:2px}
+.callout.plain{background:var(--field);color:var(--muted);border:1px solid var(--line)}
 
-footer{margin-top:40px;padding-top:14px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
-
-dialog{border:1px solid var(--line);border-radius:10px;padding:18px;max-width:520px;width:92%;background:var(--card)}
-dialog::backdrop{background:rgba(0,0,0,.35)}
-dialog h3{margin:0 0 6px;font-size:17px}
-dialog p{color:var(--muted);font-size:13px}
-dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-radius:8px;background:#fcfaf6;padding:8px;font:12px/1.5 ui-monospace,monospace;color:var(--ink)}
-.dlg-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap}
-.dlg-actions button{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:7px 12px;cursor:pointer}
-.dlg-actions button:hover{border-color:var(--line2)}
-.err{color:#a4412f}
-
-@media (max-width:720px){
-  .cards,.trk{grid-template-columns:1fr}
-  .node em{display:none}
-  .wrap{padding:12px 12px calc(32px + env(safe-area-inset-bottom))}
-  nav{flex-wrap:wrap;padding-left:max(8px,env(safe-area-inset-left));padding-right:max(8px,env(safe-area-inset-right));gap:5px}
-  nav button{padding:10px 12px;font-size:13px;min-height:40px}
-  .nav-long{display:none}
-  .nav-short{display:inline}
-  .logo-chip img{width:88px}
-  .logo-chip{padding:4px 8px}
-  .app-title{font-size:17px}
-  .app-title span{display:block;margin:2px 0 0}
-  header .actions button,header .actions a{min-height:44px;display:inline-flex;align-items:center;padding:8px 12px}
-  .picks button{min-height:44px}
-  #hud{margin-top:10px}
-  #hud .trk-row{flex-wrap:wrap;gap:6px}
-  #hud .trk-row .k{min-width:100%;letter-spacing:.05em}
-  #hud .trk-row input[type=range]{flex:1 1 100%;order:3;margin-top:2px}
-  #hud .trk-row .pct{order:4;flex:1 1 100%;text-align:right}
-  .trk-hud{padding:10px}
-  .trk-hud details{margin-top:2px}
-  .trk textarea,#trkSingle textarea,dialog textarea{font-size:16px} /* prevents iOS focus zoom */
-  .tips li{padding:12px 14px} /* prevents iOS focus zoom */
-  input[type=range]{height:44px}
+/* quick links on the overview */
+.jump{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:4px 0 0}
+.jump button{
+  border:1px solid var(--line);background:var(--card);border-radius:11px;cursor:pointer;text-align:left;
+  padding:13px 14px;box-shadow:var(--shadow);display:flex;gap:11px;align-items:center;min-height:56px
 }
-/* recruitment rows */
-.rq{display:flex;gap:10px;align-items:baseline;padding:10px 4px;border-bottom:1px solid var(--line)}
+.jump button:hover{border-color:var(--line2);background:var(--hover)}
+.jump svg{width:20px;height:20px;color:var(--accent);flex:none}
+.jump b{display:block;font-size:14.5px}
+.jump span{display:block;color:var(--muted);font-size:12.5px}
+
+/* ---------- guide loop ---------- */
+.loop{margin:0}
+.lstep{
+  border:1px solid var(--line);border-radius:12px;background:var(--card);
+  margin-bottom:10px;overflow:hidden;box-shadow:var(--shadow)
+}
+.lstep > summary{
+  padding:13px 15px;cursor:pointer;display:flex;gap:11px;align-items:baseline;list-style:none
+}
+.lstep > summary::-webkit-details-marker{display:none}
+.lstep > summary:hover{background:var(--hover)}
+.lstep .n{
+  flex:none;width:23px;height:23px;border-radius:50%;background:var(--accent-soft);color:var(--ink-soft);
+  font-size:12px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;align-self:center
+}
+.lstep .st{flex:1;min-width:0}
+.lstep .st b{display:block;font-size:15px;font-weight:600}
+.lstep .st .sub{display:block;color:var(--muted);font-size:12.5px}
+.lstep .caret{flex:none;color:var(--muted);transition:transform .18s;align-self:center}
+.lstep[open] .caret{transform:rotate(90deg)}
+.lstep .body{padding:0 15px 14px;border-top:1px solid var(--line)}
+.lead{color:var(--muted);font-size:14px;margin:12px 0 10px}
+.tips{margin:0;padding:0;list-style:none;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.tips li{padding:11px 13px;border-bottom:1px solid var(--line);font-size:14px}
+.tips li:last-child{border-bottom:0}
+.tips li strong{font-weight:600;display:block}
+.tips li span{color:var(--muted);font-size:13.5px}
+.tips li.route-tip{background:var(--accent-soft)}
+.tips li.route-tip strong{color:var(--ink-soft)}
+.route-flag{
+  font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);
+  border:1px solid currentColor;border-radius:4px;padding:0 4px;margin-left:6px;vertical-align:1px;font-weight:600
+}
+.lnote{
+  color:var(--ink-soft);font-size:13px;margin:10px 0 0;border-left:3px solid var(--accent);
+  padding:7px 11px;background:var(--accent-soft);border-radius:0 8px 8px 0
+}
+.loop-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0 0 12px}
+.linkbtn{background:none;border:0;color:var(--accent);cursor:pointer;font-size:13px;padding:8px 4px;min-height:38px}
+.linkbtn:hover{text-decoration:underline}
+
+/* sticky route strip inside the guide */
+.routebar{
+  position:sticky;top:0;z-index:12;margin:0 -16px 14px;padding:10px 16px;
+  background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line)
+}
+@media (min-width:720px){.routebar{top:0}}
+.routebar .seg{width:100%}
+
+/* ---------- recruits ---------- */
+.rec-tools{display:flex;flex-direction:column;gap:8px;margin:0 0 12px}
+.rec-search{
+  width:100%;border:1px solid var(--line);border-radius:10px;background:var(--card);
+  padding:11px 12px;font-size:16px;color:var(--ink);min-height:44px
+}
+.rec-count{font-size:12.5px;color:var(--muted)}
+.rec-count b{color:var(--ink)}
+.rec-list{border:1px solid var(--line);border-radius:12px;background:var(--card);overflow:hidden;box-shadow:var(--shadow)}
+.rq{border-bottom:1px solid var(--line)}
 .rq:last-child{border-bottom:0}
-.rq input{width:18px;height:18px;accent-color:var(--accent);flex:none}
-.rq .nm{font-weight:600;min-width:110px}
-.rq .rr{color:var(--muted);font-size:14px}
-.rq .rq-note{display:block;color:var(--muted);font-size:13px}
-.trk-hero.picked{border-color:var(--accent)}
-.trk-hero{cursor:pointer}
-.picked-tag{font-weight:600}
-.rec-hidden{color:#b5aca0}
-.rec-row-label{display:flex;align-items:center;gap:10px}
+.rq label{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;cursor:pointer;min-height:56px}
+.rq label:hover{background:var(--hover)}
+.rq input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:1px 0 0}
+.rq .nm{font-weight:600;font-size:15px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.rq .body{min-width:0;flex:1}
+.rq.done .nm{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1px}
+.reqs{display:flex;gap:6px;flex-wrap:wrap;margin-top:5px}
+.tag{
+  font-size:12px;border:1px solid var(--line2);border-radius:999px;padding:2px 9px;color:var(--muted);
+  background:var(--field);white-space:nowrap
+}
+.tag.s{color:var(--ink-soft);border-color:var(--accent);background:var(--accent-soft)}
+.tag.auto{color:var(--ok);border-color:currentColor;background:transparent}
+.rq-note{display:block;color:var(--muted);font-size:12.5px;margin-top:5px}
+.rq.na label{cursor:default}
+.rq.na .nm{color:var(--muted)}
+.rq.na label:hover{background:none}
+.empty{padding:22px 14px;text-align:center;color:var(--muted);font-size:14px}
 
+/* ---------- footer / dialogs ---------- */
+footer{margin-top:36px;padding-top:14px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+footer a{margin-right:10px}
+footer .meta{margin:8px 0 0;font-size:12px}
+
+dialog{
+  border:1px solid var(--line);border-radius:14px;padding:0;max-width:540px;width:92%;
+  background:var(--card);color:var(--ink);box-shadow:0 20px 50px rgba(20,16,8,.25)
+}
+dialog::backdrop{background:rgba(20,16,10,.45);backdrop-filter:blur(2px)}
+.dlg-head{display:flex;align-items:center;gap:10px;padding:15px 16px 0}
+.dlg-head h3{margin:0;font-size:17px;flex:1}
+.dlg-body{padding:8px 16px 0}
+.dlg-body p{color:var(--muted);font-size:13.5px;margin:0 0 10px}
+dialog textarea{
+  width:100%;min-height:130px;border:1px solid var(--line);border-radius:9px;background:var(--field);
+  padding:9px;font:12px/1.5 ui-monospace,monospace;color:var(--ink);resize:vertical
+}
+.dlg-actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;padding:12px 16px 15px}
+.dlg-actions button{
+  border:1px solid var(--line);background:var(--card);border-radius:9px;padding:9px 13px;cursor:pointer;
+  min-height:42px;color:var(--ink)
+}
+.dlg-actions button:hover{border-color:var(--line2);background:var(--hover)}
+.dlg-actions .primary{background:var(--accent-soft);border-color:var(--accent);color:var(--ink-soft);font-weight:600}
+.dlg-x{
+  border:0;background:none;cursor:pointer;color:var(--muted);width:38px;height:38px;border-radius:8px;
+  display:inline-flex;align-items:center;justify-content:center;flex:none
+}
+.dlg-x:hover{background:var(--hover);color:var(--ink)}
+.err{color:var(--warn)}
+.ok{color:var(--ok)}
+.notes-ta{
+  width:100%;margin-top:6px;border:1px solid var(--line);border-radius:9px;background:var(--field);
+  padding:10px;font:14px/1.55 inherit;color:var(--ink);min-height:88px;resize:vertical
+}
+@media (max-width:719px){.notes-ta{font-size:16px}}
+.field-label{display:block;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin:18px 0 6px}
+
+/* progress sheet slides from the bottom on phones */
+@media (max-width:719px){
+  dialog.sheet{
+    max-width:none;width:100%;margin:0 auto 0;position:fixed;bottom:0;left:0;right:0;top:auto;
+    border-radius:16px 16px 0 0;border-bottom:0;max-height:88vh;box-shadow:var(--sheet-shadow);
+    animation:up .22s ease-out
+  }
+  dialog.sheet .dlg-actions{padding-bottom:calc(15px + env(safe-area-inset-bottom))}
+  @keyframes up{from{transform:translateY(14px);opacity:.6}to{transform:none;opacity:1}}
+  .grab{width:38px;height:4px;border-radius:2px;background:var(--line2);margin:9px auto 0}
+}
+.grab{display:none}
+@media (max-width:719px){.grab{display:block}}
+dialog.sheet .dlg-body{max-height:min(62vh,520px);overflow-y:auto;padding-bottom:4px}
+
+.toast{
+  position:fixed;left:50%;transform:translateX(-50%);
+  bottom:calc(14px + var(--tabbar-h) + env(safe-area-inset-bottom));
+  background:#3d3524;color:#f5eeda;font-size:12.5px;padding:9px 16px;border-radius:999px;
+  opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;z-index:60;box-shadow:0 4px 14px rgba(0,0,0,.2)
+}
+html[data-theme=dark] .toast{background:#e7dcc2;color:#221e16}
+.toast.show{opacity:1}
+.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+@media (max-width:719px){
+  .wrap{padding:14px 14px calc(40px + var(--tabbar-h))}
+  .appbar-in{padding:5px 0 7px}
+  /* the logo already reads "Fortune's Weave" — drop the truncated wordmark */
+  .brand img{width:96px}
+  .brand-text{display:none}
+  .brand{flex:none}
+  .appbar-in{gap:8px}
+  .progress-pill{margin-left:auto;max-width:none}
+  .routebar{margin:0 -14px 12px;padding:10px 14px}
+  .rec-search,.rq label{font-size:16px}
+}
+@media (max-width:400px){
+  .brand img{width:78px}
+  #heroGridSheet img{height:54px}
+}
 </style>
 </head>
 <body>
+<div class="toast" id="saveStatus" role="status" aria-live="polite"></div>
+
+<div class="appbar">
+  <div class="appbar-in">
+    <a class="brand" href="#/overview" id="homeLink">
+      <img src="assets/logo.png" alt="" width="480" height="100" />
+      <span class="brand-text">
+        <strong>Fortune’s Weave Companion</strong>
+        <span class="tagline">free fan-made planner</span>
+      </span>
+    </a>
+    <div class="actions">
+      <button class="progress-pill" id="progressBtn" aria-haspopup="dialog">
+        <img id="ppImg" src="assets/cai.png" alt="" />
+        <span class="pp-t">
+          <span class="pp-hero" id="ppHero">Cai</span>
+          <span class="pp-at" id="ppAt">Part 1 · Ch 1</span>
+        </span>
+      </button>
+      <button class="iconbtn" id="themeBtn" aria-label="Switch to dark theme" title="Theme">
+        <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M18.4 5.6L17 7M7 17l-1.4 1.4"/></svg>
+      </button>
+      <button class="iconbtn" id="menuBtn" aria-label="More options" aria-haspopup="dialog">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="tabs" role="tablist" aria-label="Sections" id="tabsTop"></div>
+</div>
+
 <div class="wrap">
-<div class="toast" id="saveStatus"></div>
 
-<div class="topbar">
-<header>
-  <a class="brand" href="#" id="homeLink">
-    <span class="logo-chip"><img src="assets/logo.png" alt="Fire Emblem: Fortune’s Weave official logo" /></span>
-    <span class="brand-text">
-      <strong>Fortune’s Weave Companion</strong>
-      <span class="tagline">free fan-made planner</span>
-    </span>
-  </a>
-  <div class="actions">
-    <button id="syncBtn">Backup / restore</button>
-    <a class="chip-link" href="https://ko-fi.com/K3K11RWTSL" target="_blank" rel="noopener">Ko-fi</a>
-  </div>
-</header>
-<nav>
+<section id="overview" class="page active" role="tabpanel" aria-labelledby="tab-overview" tabindex="-1">
+  <span class="eyebrow">Start here</span>
+  <h1>Fortune’s Weave Companion</h1>
+  <p class="page-lead">A small planner and reference for Fire Emblem Fortune’s Weave — not a day-by-day route. You play Eshmel, an avatar sent back from Balor’s ruined future to save four Heroes: the Heroic Games in Dagsion (around 1449), then a timeskip to the war in 1454.</p>
 
-<nav>
-  <button data-page="p1"><span class="nav-long">Part 1 · Heroic Games</span><span class="nav-short">Part 1</span></button>
-  <button data-page="p2"><span class="nav-long">Part 2 · After the timeskip</span><span class="nav-short">Part 2</span></button>
-  <button data-page="p3"><span class="nav-long">Part 3 · Salvation</span><span class="nav-short">Part 3</span></button>
-  <button data-page="recruits"><span class="nav-long">Recruits</span><span class="nav-short">Recruits</span></button>
-  <button data-page="always"><span class="nav-long">Reference</span><span class="nav-short">Reference</span></button>
-</nav>
-<div class="section" id="hud">
-  <div class="trk-hud" id="trkSingle"></div>
-</div>
-</div>
+  <div class="section jump" id="jumpLinks"></div>
 
-<section id="start" class="page active">
-  <div class="section">
-    <h2>What is this</h2>
-    <p>Fire Emblem Fortune's Weave is out on Switch 2. You play Eshmel, a customizable avatar sent back in time from Balor's ruined future to save four Heroes. The story covers the Heroic Games in Dagsion (around year 1449), then a timeskip to the war in 1454.</p>
-    <p>This site is a small planner and reference, not a day-by-day route. Progress saves in this browser only — no account, no ads.</p>
-  </div>
-
-  <div class="section cards">
+  <h3 class="sec-h">Four things that shape every run</h3>
+  <div class="cards two">
     <div class="card">
-      <h3>The four Heroes</h3>
-      <ul>
-        <li><strong>Cai</strong> — wants to free his father Castor</li>
-        <li><strong>Dietrich</strong> — Fódlan noble, wields the Answerer, hunts strong foes</li>
-        <li><strong>Theodora</strong> — queen of Saramis, serves the goddess Yu Phas</li>
-        <li><strong>Leda</strong> — dancer hunting her father's killer Bertrand</li>
-      </ul>
+      <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>Turns, not clocks</h3>
+      <ul><li>One in-game day is four Turns. The clock display is meaningless — time only moves when you do something that <strong>costs</strong> a Turn, so thinking is free.</li></ul>
     </div>
     <div class="card">
-      <h3>How it works</h3>
-      <ul>
-        <li>One in-game day is four Turns. The clock display is meaningless — only the Turns count, and time only moves when you do something that costs a Turn.</li>
-        <li>There is one autosave slot for the whole game. Fortuna's Blessing (move rewind) is the safety net, so use it early.</li>
-        <li>Finishing one Hero path carries over world-map exploration and completed generic subquests to the next path. Levels, gear, and items do not cross paths — only into Part 2.</li>
-        <li>Support levels, Blessing levels, Notable Deeds, and Boons of Salvation are global: progress them once and every route benefits.</li>
-      </ul>
+      <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M12 3l2 6.2 6.5.1-5.2 3.9 1.9 6.2L12 15.6 6.8 19.4l1.9-6.2L3.5 9.3 10 9.2z"/></svg>One autosave</h3>
+      <ul><li>There is a single autosave slot for the whole game. <strong>Fortuna’s Blessing</strong> (move rewind) is your only safety net — use it early and often.</li></ul>
+    </div>
+    <div class="card">
+      <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M4 17V7a2 2 0 012-2h5l2 2h5a2 2 0 012 2v8a2 2 0 01-2 2z"/></svg>What carries over</h3>
+      <ul><li>Finishing a Hero path carries <strong>world-map exploration</strong> and completed generic subquests into the next path. Levels, gear and items do not — only into Part 2.</li></ul>
+    </div>
+    <div class="card">
+      <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.5 2.5 14 0 17M12 3.5c-2.5 2.5-2.5 14 0 17"/></svg>Global progress</h3>
+      <ul><li>Support levels, Blessing levels, Notable Deeds and Boons of Salvation are <strong>global</strong>. Raise them once on any route and every route benefits.</li></ul>
     </div>
   </div>
 
-  <div class="callout">Unofficial fan tool, not affiliated with Nintendo or Intelligent Systems. Sources: Nintendo Direct transcripts, Serenes Forest, Fire Emblem Wiki, RPG Site walkthrough tips.</div>
+  <h3 class="sec-h">The four Heroes</h3>
+  <p class="page-lead" style="margin-bottom:12px">Pick whichever route you’re playing — the Guide and Recruits tabs both follow it. Eshmel is the solo path against Balor.</p>
+  <div class="hero-grid" id="heroGridOverview"></div>
+  <p class="hero-role" id="heroRoleOverview"></p>
+
+  <div class="callout plain">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5M12 7.8v.4"/></svg>
+    <span>Unofficial fan tool, not affiliated with Nintendo or Intelligent Systems. Progress saves in this browser only — no account, no ads. Sources: Nintendo Direct transcripts, Serenes Forest, Fire Emblem Wiki, RPG Site walkthrough tips.</span>
+  </div>
 </section>
 
-<section id="p1" class="page">
-  <div class="section">
-    <h2>Part 1 · The Heroic Games loop</h2>
-    <p>Free Time runs on a clock: about 11 in-game months from preliminaries to the final match. The HUD above picks the hero — the loop below follows that route.</p>
-    <div id="routeCard"></div>
+<section id="guide" class="page" role="tabpanel" aria-labelledby="tab-guide" tabindex="-1">
+  <div class="routebar">
+    <div class="seg" role="group" aria-label="Story part" id="partSeg">
+      <button type="button" data-part="1" aria-pressed="true">Part 1</button>
+      <button type="button" data-part="2" aria-pressed="false">Part 2</button>
+      <button type="button" data-part="3" aria-pressed="false">Part 3</button>
+    </div>
+  </div>
 
+  <div id="guideP1" class="guide-part">
+    <span class="eyebrow">Part 1 · Heroic Games</span>
+    <h2>The Free Time loop</h2>
+    <p class="page-lead">About 11 in-game months from the preliminaries to the final match. Every step repeats; nothing here is meant to be crossed off. Tips marked <span class="route-flag">route</span> are specific to the hero you’re playing.</p>
+    <p class="page-lead" id="routeCard" style="margin-bottom:14px"></p>
+    <div class="loop-tools">
+      <button class="linkbtn" data-loop-toggle="loop1" data-open="0">Expand all steps</button>
+    </div>
     <div class="loop" id="loop1"></div>
   </div>
-</section>
 
-<section id="p2" class="page">
-  <div class="section">
-    <h2>Part 2 · After the timeskip</h2>
-    <p>Five years after the Games, the story continues chapter to chapter. The calendar loop is gone. Notes here stay general until community guides have covered the chapters.</p>
-
+  <div id="guideP2" class="guide-part" hidden>
+    <span class="eyebrow">Part 2 · After the timeskip</span>
+    <h2>The chapter loop</h2>
+    <p class="page-lead">Five years after the Games: six chapters, the same for every protagonist, and no Free Time calendar. These notes stay general until community guides cover the chapters.</p>
+    <div class="loop-tools">
+      <button class="linkbtn" data-loop-toggle="loop2" data-open="0">Expand all steps</button>
+    </div>
     <div class="loop" id="loop2"></div>
-    <div class="callout">Don't carry the Dagsion weekly routine into Part 2 — there's no Free Time economy anymore. Part 2 also has catch-up methods for units you benched in Part 1.</div>
+    <div class="callout">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M12 4.5l8 14.5H4z"/><path d="M12 10v4.2M12 16.6v.3"/></svg>
+      <span>Don’t carry the Dagsion weekly routine into Part 2 — the Free Time economy is gone. Part 2 also has catch-up methods for units you benched in Part 1.</span>
+    </div>
+  </div>
+
+  <div id="guideP3" class="guide-part" hidden>
+    <span class="eyebrow">Part 3 · Salvation</span>
+    <h2>Still being mapped</h2>
+    <p class="page-lead">The third act stays thin on purpose. Launch-week late-game details aren’t verified, and this is a spoiler-light companion — it fills in only with things that are safe to read and confirmed by guides.</p>
+    <div class="cards">
+      <div class="card">
+        <h3>What already matters</h3>
+        <ul>
+          <li>Some Part 3 character availability depends on which <strong>Paralogues</strong> you completed back in Part 1.</li>
+          <li>Eshmel supports built by feeding the <strong>Pale Raven</strong> come into play here.</li>
+          <li>Nothing is permanently missable — any part can be replayed after the finale.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Who joins here</h3>
+        <ul id="laterListP3"></ul>
+      </div>
+    </div>
+    <div class="callout plain">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5M12 7.8v.4"/></svg>
+      <span>Check back once the community has mapped the late game.</span>
+    </div>
   </div>
 </section>
 
-<section id="p3" class="page">
+<section id="reference" class="page" role="tabpanel" aria-labelledby="tab-reference" tabindex="-1">
   <div class="section">
-    <h2>Part 3 — section in progress</h2>
-    <p>The game's third act. This page stays mostly empty for now: launch-week late-game details aren't verified yet, and this is a spoiler-light companion, so it will only fill in with things that are safe to read and confirmed by guides.</p>
-    <p>Worth knowing today: things you did in Part 1 carry weight here. Some Part 3 character availability depends on which Paralogues you completed, and the Eshmel supports built by feeding the Pale Raven come into play.</p>
-    <p>Check back after the community has mapped the late game.</p>
-  </div>
-</section>
-
-<section id="always" class="page">
-  <div class="section">
+    <span class="eyebrow">Always useful</span>
     <h2>Reference</h2>
-    <p>Quick answers that apply anywhere in the game.</p>
+    <p class="page-lead">Quick answers that apply anywhere in the game.</p>
     <div class="cards">
       <div class="card">
         <h3>Blaze Arts</h3>
@@ -380,61 +591,154 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
   </div>
 </section>
 
-<section id="recruits" class="page">
-  <div class="section">
-    <h2>Recruits</h2>
-    <p>Part 1 recruitment has four parts: the character's <strong>Support with your lord</strong> (S), your <strong>Renown level</strong> (R), usually a quest, item, or payment, and sometimes a Paralogue. Pick the route you're playing to see that route's requirements; tick characters once they've joined.</p>
+<section id="recruits" class="page" role="tabpanel" aria-labelledby="tab-recruits" tabindex="-1">
+  <span class="eyebrow">Part 1 · Recruiting</span>
+  <h2>Recruits</h2>
+  <p class="page-lead">Each character needs a <strong>Support level with your lord</strong>, a <strong>Renown level</strong>, and usually a quest, item or payment — sometimes a Paralogue too. Requirements differ per route, so this list follows the hero you’re playing. Checkmarks are tracked per route.</p>
 
-    <div class="picks" id="recRoutePicks"></div>
-    <p style="color:var(--muted);font-size:13px;margin:6px 0">S = Support level with your lord · R = your global Renown level</p>
+  <div class="routebar">
+    <div class="seg wide" role="group" aria-label="Route" id="recRoutePicks"></div>
+  </div>
 
-    <div class="card" style="margin:10px 0 16px">
-      <h3>How it works</h3>
+  <div class="rec-tools">
+    <input id="recSearch" class="rec-search" type="search" placeholder="Filter by name…" aria-label="Filter recruits by name" autocomplete="off" />
+    <div class="seg" role="group" aria-label="Show" id="recFilterSeg">
+      <button type="button" data-filter="all" aria-pressed="true">All</button>
+      <button type="button" data-filter="todo" aria-pressed="false">Still to get</button>
+      <button type="button" data-filter="done" aria-pressed="false">Recruited</button>
+    </div>
+    <p class="rec-count" id="recCount"></p>
+  </div>
+
+  <div class="rec-list" id="recList"></div>
+
+  <h3 class="sec-h">How recruiting works</h3>
+  <div class="cards">
+    <div class="card">
+      <h3>Raising the numbers</h3>
       <ul>
-        <li>Gifts and shared inn meals raise Supports; stage shows at the theater do too (once unlocked).</li>
-        <li>Renown rises from main missions, subquests, Paralogues, and holding audiences with the Gods.</li>
-        <li>Supports, Blessing levels, and Renown fetch a global save — raised once, they apply to every route.</li>
+        <li>Gifts and shared inn meals raise <strong>Supports</strong>; theater stage shows do too, once unlocked.</li>
+        <li><strong>Renown</strong> rises from main missions, subquests, Paralogues and audiences with the Gods.</li>
+        <li>Supports, Blessing levels and Renown live in a global save — raise them once and every route benefits.</li>
         <li>Recruiting later in Part 1 brings higher levels and better starting gear.</li>
       </ul>
     </div>
-
-    <input id="recSearch" type="search" placeholder="Filter by name…" style="width:100%;margin-bottom:8px" />
-    <div class="card" id="recList"></div>
-
-    <div class="card" style="margin-top:16px">
+    <div class="card">
       <h3>People who join later</h3>
-      <ul id="laterList" style="padding-left:18px;color:var(--muted);font-size:14px"></ul>
+      <ul id="laterList"></ul>
     </div>
-    <div class="callout">Checkmarks are this browser only. Same backup/restore flow covers them.</div>
+  </div>
+  <div class="callout plain">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5M12 7.8v.4"/></svg>
+    <span>Checkmarks live in this browser only. Backup / restore in the menu covers them.</span>
   </div>
 </section>
 
 <footer>
-  Unofficial fan tool, not affiliated with Nintendo, Intelligent Systems, or Koei Tecmo.
-  <a href="https://ko-fi.com/K3K11RWTSL" target="_blank" rel="noopener">Support on Ko-fi</a>.
+  <p style="margin:0 0 6px">Unofficial fan tool, not affiliated with Nintendo, Intelligent Systems, or Koei Tecmo.</p>
+  <a href="https://ko-fi.com/K3K11RWTSL" target="_blank" rel="noopener">Support on Ko-fi</a>
   <a href="#" id="aboutLink">About</a>
-  <span style="margin-left:8px">build 20 — 17 Sep</span>
-  <p style="margin:8px 0 0">Umami measures visits and feature use. Notes, checkmarks and save contents stay in your browser and are never sent in events.</p>
+  <a href="#" id="footerSync">Backup / restore</a>
+  <p class="meta">build 23 — 17 Sep · Umami measures visits and feature use. Notes, checkmarks and save contents stay in your browser and are never sent in events.</p>
 </footer>
 </div>
 
-<dialog id="syncDlg">
-  <h3>Backup / restore</h3>
-  <p>Copy this text to move your progress, or paste a previous backup and press Restore.</p>
-  <textarea id="syncData" spellcheck="false"></textarea>
-  <div class="dlg-actions">
-    <button id="copyBtn">Copy</button>
-    <button id="downloadBtn">Download file</button>
-    <button id="importBtn">Restore</button>
-    <button id="closeDlg">Close</button>
+<nav class="tabbar" role="tablist" aria-label="Sections" id="tabsBottom"></nav>
+
+<dialog id="progressDlg" class="sheet" aria-labelledby="progressTitle">
+  <div class="grab"></div>
+  <div class="dlg-head">
+    <h3 id="progressTitle">My progress</h3>
+    <button class="dlg-x" data-close="progressDlg" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
   </div>
-  <p id="syncMsg" style="margin:8px 0 0;font-size:13px"></p>
+  <div class="dlg-body">
+    <p>The route you pick here drives the Guide and Recruits tabs.</p>
+    <span class="field-label">Route</span>
+    <div class="hero-grid" id="heroGridSheet"></div>
+    <p class="hero-role" id="heroRoleSheet"></p>
+
+    <span class="field-label">Where you are</span>
+    <div class="seg wide" role="group" aria-label="Story part" id="sheetPartSeg"></div>
+    <div class="chrow">
+      <button type="button" class="step" id="chDown" aria-label="Previous chapter">−</button>
+      <span class="chnum"><b id="chNum">1</b><span id="chCap">of 12</span></span>
+      <button type="button" class="step" id="chUp" aria-label="Next chapter">+</button>
+    </div>
+    <input type="range" id="chRange" min="1" max="12" value="1" aria-label="Chapter" />
+    <p class="rec-count" id="chHint"></p>
+
+    <span class="field-label" id="notesLabel">Notes</span>
+    <textarea class="notes-ta" id="heroNote" placeholder="Recruits, deadlines, class plans…" aria-labelledby="notesLabel"></textarea>
+    <p class="rec-count" id="recProgress"></p>
+  </div>
+  <div class="dlg-actions">
+    <button class="primary" data-close="progressDlg">Done</button>
+  </div>
 </dialog>
 
-<dialog id="aboutDlg">
-  <h3>About</h3>
-  <p>A free fan companion, inspired by the Persona Trackers project. Progress is stored only in your browser. Umami measures visits and feature use; no note text, names or save contents are sent. Information is collected from official materials and community wikis; it will grow as guides verify more of the late game.</p>
-  <div class="dlg-actions"><button id="closeAbout">Close</button></div>
+<dialog id="menuDlg" class="sheet" aria-labelledby="menuTitle">
+  <div class="grab"></div>
+  <div class="dlg-head">
+    <h3 id="menuTitle">More</h3>
+    <button class="dlg-x" data-close="menuDlg" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <div class="dlg-body">
+    <div class="jump" style="grid-template-columns:1fr">
+      <button id="syncBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M12 15.5V4.5M8.5 8L12 4.5 15.5 8"/><path d="M4.5 14v4a2 2 0 002 2h11a2 2 0 002-2v-4"/></svg>
+        <span><b>Backup / restore</b><span>Move progress to another browser or device</span></span>
+      </button>
+      <button id="aboutBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5M12 7.8v.4"/></svg>
+        <span><b>About this site</b><span>What it is, and what data it keeps</span></span>
+      </button>
+      <a class="jump-a" href="https://ko-fi.com/K3K11RWTSL" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;border:1px solid var(--line);background:var(--card);border-radius:11px;padding:13px 14px;box-shadow:var(--shadow);display:flex;gap:11px;align-items:center;min-height:56px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true" style="width:20px;height:20px;color:var(--accent);flex:none"><path d="M12 20s-7-4.4-7-9.2A4 4 0 0112 8.4 4 4 0 0119 10.8C19 15.6 12 20 12 20z"/></svg>
+        <span><b style="display:block;font-size:14.5px">Support on Ko-fi</b><span style="display:block;color:var(--muted);font-size:12.5px">The site is free and ad-free</span></span>
+      </a>
+    </div>
+  </div>
+  <div class="dlg-actions"><button data-close="menuDlg">Close</button></div>
+</dialog>
+
+<dialog id="syncDlg" aria-labelledby="syncTitle">
+  <div class="dlg-head">
+    <h3 id="syncTitle">Backup / restore</h3>
+    <button class="dlg-x" data-close="syncDlg" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <div class="dlg-body">
+    <p>Copy this text or download it to move your progress. To restore, paste a backup below (or load a file) and press Restore.</p>
+    <textarea id="syncData" spellcheck="false" aria-label="Backup data"></textarea>
+    <p id="syncMsg" style="margin:8px 0 0;font-size:13px"></p>
+    <input type="file" id="importFile" accept="application/json,.json,.txt" class="sr" />
+  </div>
+  <div class="dlg-actions">
+    <button id="copyBtn">Copy</button>
+    <button id="downloadBtn">Download</button>
+    <button id="loadFileBtn">Load file…</button>
+    <button id="importBtn" class="primary">Restore</button>
+  </div>
+</dialog>
+
+<dialog id="aboutDlg" aria-labelledby="aboutTitle">
+  <div class="dlg-head">
+    <h3 id="aboutTitle">About</h3>
+    <button class="dlg-x" data-close="aboutDlg" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <div class="dlg-body">
+    <p>A free fan companion, inspired by the Persona Trackers project. Progress is stored only in your browser — there is no account and nothing to sign up for.</p>
+    <p>Umami measures visits and feature use; no note text, names or save contents are ever sent. Information comes from official materials and community wikis, and will grow as guides verify more of the late game.</p>
+    <p>Character art and the logo are official marketing assets © Nintendo / Intelligent Systems, used for non-commercial informational purposes.</p>
+  </div>
+  <div class="dlg-actions"><button data-close="aboutDlg">Close</button></div>
 </dialog>
 
 <script>
@@ -452,21 +756,16 @@ function markUsed(action){
  if(!usedTracker){usedTracker=true;track('fw_tracker_used')}
  track('fw_progress_changed',{action});
 }
+/* recruitData: which route's requirement column this hero uses.
+   Eshmel's solo path has no published per-character table, so it borrows nothing. */
 const HEROES=[
- {id:'cai',      name:'Cai',      who:'Tames mounts on the world map.'},
- {id:'dietrich', name:'Dietrich', who:'Reveals hidden enemies while exploring.'},
- {id:'theodora', name:'Theodora', who:'Recruits soldiers to aid exploration and combat.'},
- {id:'leda',     name:'Leda',     who:'Performs at inns for extra rewards.'},
- {id:'eshmel',   name:'Eshmel',   who:'Your avatar; the solo path faces Balor directly.'}
+ {id:'cai',      name:'Cai',      who:'Tames mounts on the world map.',                        recruitData:'cai'},
+ {id:'dietrich', name:'Dietrich', who:'Reveals hidden enemies while exploring.',               recruitData:'dietrich'},
+ {id:'theodora', name:'Theodora', who:'Recruits soldiers to aid exploration and combat.',      recruitData:'theodora'},
+ {id:'leda',     name:'Leda',     who:'Performs at inns for extra rewards.',                   recruitData:'leda'},
+ {id:'eshmel',   name:'Eshmel',   who:'Your avatar; the solo path faces Balor directly.',      recruitData:null}
 ];
-
-/* recruitment */
-const ROUTES=[
- {id:'cai',label:'Cai route'},
- {id:'dietrich',label:'Dietrich route'},
- {id:'theodora',label:'Theodora route'},
- {id:'leda',label:'Leda route'}
-];
+const heroById=id=>HEROES.find(h=>h.id===id)||HEROES[0];
 const RECRUITS=[
  {name:'Seteth',reqs:{cai:'3S · 6R · Quest',dietrich:'not available',theodora:'3S · 6R · Quest',leda:'3S · 10R · Quest'}},
  {name:'Ninae',reqs:{cai:'3S · 6R · 1 Paradise Fish',dietrich:'3S · 8R · 1 Paradise Fish',theodora:'3S · 6R · 1 Paradise Fish',leda:'3S · 6R · 1 Paradise Fish'},note:'Paradise Fish: Lake Brontes in Saveilon, past Valhalla Mine'},
@@ -698,238 +997,488 @@ const FLOW_TIPS={
  }
 };
 
-/* loop rendering: everything visible, no clicks */
-let currentHero=store.get('fwc-route')||'cai';
+/* ---------- routing ----------
+   Hashes are tab addresses, not anchors, so stop the browser from
+   scrolling to (or restoring the scroll of) a matching element id. */
+if('scrollRestoration' in history) history.scrollRestoration='manual';
+const TABS=[
+ {id:'overview', label:'Overview', short:'Overview',
+  icon:'<path d="M4 11.5L12 5l8 6.5"/><path d="M6 10.8V19h12v-8.2"/>'},
+ {id:'guide',    label:'Guide',    short:'Guide',
+  icon:'<path d="M4 5.5h6a2 2 0 012 2V19a2 2 0 00-2-2H4z"/><path d="M20 5.5h-6a2 2 0 00-2 2V19a2 2 0 012-2h6z"/>'},
+ {id:'recruits', label:'Recruits', short:'Recruits',
+  icon:'<circle cx="9" cy="9" r="3"/><path d="M3.8 19c.6-3 2.7-4.6 5.2-4.6S13.6 16 14.2 19"/><path d="M16 7.5a3 3 0 010 6M18 19c-.3-1.8-1-3.2-2-4.1"/>'},
+ {id:'reference',label:'Reference',short:'Reference',
+  icon:'<path d="M6 4.5h9l4 4V19a1 1 0 01-1 1H6a1 1 0 01-1-1V5.5a1 1 0 011-1z"/><path d="M14.5 4.8v4h4.2M8.5 13h7M8.5 16.2h4.5"/>'}
+];
+const PAGE_IDS=TABS.map(t=>t.id);
+const LEGACY_ROUTE={p1:['guide',1],p2:['guide',2],p3:['guide',3],start:['overview',null],always:['reference',null]};
+/* "#/guide/part-2" rather than "#guide": a bare "#guide" matches the section's
+   own id, and the browser would scroll to it instead of showing it as a tab. */
+const pageHash=id=>'#/'+id+(id==='guide'?'/part-'+currentPart:'');
 
-function renderLoop(elId,steps){
- const hero=HEROES.find(h=>h.id===currentHero);
- const tipHtml=(a,b,route)=>`<li${route?' class="route-tip"':''}><strong>${a}</strong> — <span>${b}</span></li>`;
- document.getElementById(elId).innerHTML=steps.map(s=>{
-  const extra=(hero&&FLOW_TIPS[hero.id]&&FLOW_TIPS[hero.id][s.id])||[];
-  const d=s.detail;
-  return `<div class="lstep">
-   <h3><span class="n">${s.n}</span> ${s.title} <span class="sub">${s.sub}</span></h3>
-   <p class="lead">${hero?hero.name+' route · ':''}${d.text}</p>
-   <ul class="tips">
-    ${extra.map(([a,b])=>tipHtml(a,b,1)).join('')}
-    ${d.tips.map(([a,b])=>tipHtml(a,b,0)).join('')}
-   </ul>
-   <p class="lnote">${d.note}</p>
-  </div>`;
- }).join('');
+function tabButton(t,bottom){
+ return `<button role="tab" id="${bottom?'tabb-':'tab-'}${t.id}" data-page="${t.id}"
+   aria-selected="false" aria-controls="${t.id}" tabindex="-1">
+   ${bottom?`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${t.icon}</svg>`:''}
+   <span>${bottom?t.short:t.label}</span>${bottom?'<span class="tb-dot"></span>':''}
+ </button>`;
 }
-function renderAllLoops(){
- renderLoop('loop1',steps1);
- renderLoop('loop2',steps2);
-}
-renderAllLoops();
+document.getElementById('tabsTop').innerHTML=TABS.map(t=>tabButton(t,false)).join('');
+document.getElementById('tabsBottom').innerHTML=TABS.map(t=>tabButton(t,true)).join('');
 
-/* tabs */
-function showPage(id){
- document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===id));
- document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===id));
- if(id) store.set('fwc-part',id);
+let currentPage='overview';
+function showPage(id,{push=true,focus=false}={}){
+ if(!PAGE_IDS.includes(id)) id='overview';
+ currentPage=id;
+ document.querySelectorAll('[role=tab]').forEach(b=>{
+  const on=b.dataset.page===id;
+  b.setAttribute('aria-selected',on?'true':'false');
+  b.tabIndex=on?0:-1;
+ });
+ document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));
+ store.set('fwc-tab',id);
+ if(push){
+  const hash=pageHash(id);
+  if(location.hash!==hash) history.pushState({page:id},'',hash);
+ }
+ if(focus){const el=document.getElementById(id);if(el) el.focus({preventScroll:true})}
+ /* a hash change would otherwise leave the browser scrolled to the section */
+ requestAnimationFrame(()=>window.scrollTo(0,0));
 }
-document.querySelectorAll('nav button').forEach(t=>{
- t.addEventListener('click',()=>{showPage(t.dataset.page);track('fw_tab_opened',{tab:t.dataset.page})});
+document.querySelectorAll('[role=tablist]').forEach(list=>{
+ list.addEventListener('click',e=>{
+  const b=e.target.closest('[role=tab]'); if(!b) return;
+  showPage(b.dataset.page);
+  track('fw_tab_opened',{tab:b.dataset.page});
+ });
+ /* arrow-key tab navigation */
+ list.addEventListener('keydown',e=>{
+  const keys={ArrowRight:1,ArrowLeft:-1,ArrowDown:1,ArrowUp:-1};
+  if(!(e.key in keys)&&e.key!=='Home'&&e.key!=='End') return;
+  e.preventDefault();
+  let i=PAGE_IDS.indexOf(currentPage);
+  if(e.key==='Home') i=0;
+  else if(e.key==='End') i=PAGE_IDS.length-1;
+  else i=(i+keys[e.key]+PAGE_IDS.length)%PAGE_IDS.length;
+  showPage(PAGE_IDS[i]);
+  list.querySelector(`[data-page="${PAGE_IDS[i]}"]`)?.focus();
+ });
 });
 document.getElementById('homeLink').addEventListener('click',e=>{
- e.preventDefault();
- showPage(null);
- document.getElementById('start').classList.add('active');
- store.set('fwc-part','start');
-  track('fw_tab_opened',{tab:'start'});
+ e.preventDefault(); showPage('overview'); track('fw_tab_opened',{tab:'overview'});
 });
 
-/* one shared hero (route) selector — synced everywhere */
-function selectHero(id){
- currentHero=id;
- store.set('fwc-route',id);
- document.getElementById('routeCard').textContent=routeText[id];
- document.querySelectorAll('[data-route]').forEach(x=>x.classList.toggle('active',x.dataset.route===id));
- buildTrk();
- renderAllLoops();
- renderRecruits();
+/* deep links: #guide/part-2, #recruits, plus the old #p1 style */
+function applyHash(push=false){
+ const raw=(location.hash||'').replace(/^#\/?/,'');
+ if(!raw){showPage(store.get('fwc-tab')||'overview',{push});return}
+ const [head,tail]=raw.split('/');
+ if(LEGACY_ROUTE[head]){
+  const [page,part]=LEGACY_ROUTE[head];
+  if(part) setPart(part,{push:false});
+  showPage(page,{push});
+  return;
+ }
+ if(head==='guide'){
+  const m=/^part-([123])$/.exec(tail||'');
+  setPart(m?+m[1]:currentPart,{push:false});
+ }
+ showPage(head,{push});
 }
+window.addEventListener('popstate',()=>applyHash(false));
 
-/* tracker */
+/* ---------- theme ---------- */
+const THEME_KEY='fwc-theme';
+function applyTheme(mode){
+ const dark=mode==='dark';
+ document.documentElement.setAttribute('data-theme',dark?'dark':'light');
+ document.querySelector('meta[name=theme-color]')?.setAttribute('content',dark?'#17150f':'#faf7f2');
+ const btn=document.getElementById('themeBtn');
+ btn.setAttribute('aria-label',dark?'Switch to light theme':'Switch to dark theme');
+ document.getElementById('themeIcon').innerHTML=dark
+  ? '<path d="M20 13.4A8.2 8.2 0 1110.6 4a6.6 6.6 0 009.4 9.4z"/>'
+  : '<circle cx="12" cy="12" r="4.2"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M18.4 5.6L17 7M7 17l-1.4 1.4"/>';
+}
+const savedTheme=store.get(THEME_KEY);
+applyTheme(savedTheme||(window.matchMedia?.('(prefers-color-scheme:dark)').matches?'dark':'light'));
+document.getElementById('themeBtn').addEventListener('click',()=>{
+ const next=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
+ applyTheme(next); store.set(THEME_KEY,next); track('fw_theme_changed',{theme:next});
+});
+
+/* ---------- state ---------- */
 const KEY='fwc-progress-v1', BACKUP_KEY='fwc-progress-backup-v1';
+const CHAPTER_CAPS={1:12,2:6,3:10};
 function loadState(){
  try{const raw=store.get(KEY);return raw?JSON.parse(raw):{}}catch(e){return {}}
 }
 let state=loadState();
-function saveState(){
- store.set(KEY,JSON.stringify(state));
- setStatus('saved');
-}
+function saveState(){store.set(KEY,JSON.stringify(state));setStatus('Saved')}
 let toastTimer;
 function setStatus(t){
- const el=document.getElementById('saveStatus');
- if(!el) return;
+ const el=document.getElementById('saveStatus'); if(!el) return;
  el.textContent=t; el.classList.add('show');
  clearTimeout(toastTimer);
  toastTimer=setTimeout(()=>el.classList.remove('show'),1500);
 }
-
-function buildTrk(){
- const h=HEROES.find(x=>x.id===currentHero)||HEROES[0];
- const st=state[h.id]||{};
- const part=st.part||1;
- const cap=CHAPTER_CAPS[part]||10;
- const ch=Math.min(Math.max(parseInt(st.chNum,10)||1,1),cap);
- document.getElementById('trkSingle').innerHTML=`
-  <div class="trk-row">
-   ${HEROES.map(x=>`<button type="button" class="mini${x.id===h.id?' act':''}" data-pp="${x.id}" data-hero="${x.id}">${x.name}</button>`).join('')}
-  </div>
-  <div class="trk-row">
-   <span class="k">Part</span>
-   ${[1,2,3].map(n=>`<button type="button" class="mini${part===n?' act':''}" data-pp="${h.id}" data-part="${n}">${n===2?'Part 2 · War':'Part '+n}</button>`).join('')}
-   <input type="range" style="flex:1;min-width:120px;accent-color:var(--accent)" min="1" max="${cap}" value="${ch}" data-ch="${h.id}" />
-   <span class="pct" data-out="${h.id}">Ch ${ch} / ${cap}</span>
-  </div>
-  ${part===3?'<p style="font-size:12px;color:var(--muted);margin:4px 0 0">Part 3 was described by sections so far — the cap here is a guess; treat it loosely.</p>':''}
-  <details style="margin-top:6px"><summary style="cursor:pointer;font-size:13px;color:var(--muted)">Notes (${h.name})</summary>
-   <textarea placeholder="Recruits, deadlines, class plans…" data-note="${h.id}">${st.note||''}</textarea>
-  </details>`;
+let currentHero=store.get('fwc-route')||'cai';
+if(!HEROES.some(h=>h.id===currentHero)) currentHero='cai';
+let currentPart=1;
+const heroState=id=>(state[id]=state[id]||{});
+function heroChapter(id){
+ const st=heroState(id), cap=CHAPTER_CAPS[st.part||1]||10;
+ return Math.min(Math.max(parseInt(st.chNum,10)||1,1),cap);
 }
-const CHAPTER_CAPS={1:12,2:6,3:10};
 
-const trk=document.getElementById('trkSingle');
-let noteDebounce;
-trk.addEventListener('click',e=>{
- const btn=e.target.closest('[data-pp]'); if(!btn) return;
- if(btn.dataset.hero){selectHero(btn.dataset.hero);markUsed('hero');return}
- const hero=btn.dataset.pp;
- state[hero]=state[hero]||{};
- if(btn.dataset.part){
-  state[hero].part=+btn.dataset.part;
-  markUsed('part');
-  const cur=parseInt(state[hero].chNum,10)||1;
-  state[hero].chNum=Math.min(Math.max(cur,1),CHAPTER_CAPS[state[hero].part]);
-  buildTrk();
-  saveState();
+/* recruit checkmarks are per route: state.recruitsByRoute[route][name].
+   v1 saves kept one shared map — migrate it onto whichever route was active. */
+function migrateRecruits(){
+ if(state.recruits&&!state.recruitsByRoute){
+  state.recruitsByRoute={[currentHero]:state.recruits};
+  delete state.recruits;
+  store.set(KEY,JSON.stringify(state));
  }
+ state.recruitsByRoute=state.recruitsByRoute||{};
+}
+migrateRecruits();
+const recruitMarks=route=>(state.recruitsByRoute[route]=state.recruitsByRoute[route]||{});
+
+/* ---------- guide loop ---------- */
+function renderLoop(elId,steps){
+ const hero=heroById(currentHero);
+ const el=document.getElementById(elId); if(!el) return;
+ const open=new Set(JSON.parse(store.get('fwc-open-'+elId)||'[]'));
+ const tip=(a,b,route)=>
+  `<li${route?' class="route-tip"':''}><strong>${a}${route?'<span class="route-flag">route</span>':''}</strong><span>${b}</span></li>`;
+ el.innerHTML=steps.map((s,i)=>{
+  const extra=(FLOW_TIPS[hero.id]&&FLOW_TIPS[hero.id][s.id])||[];
+  const d=s.detail;
+  return `<details class="lstep" data-step="${s.id}"${open.has(s.id)||(!open.size&&i===0)?' open':''}>
+   <summary>
+    <span class="n">${s.n}</span>
+    <span class="st"><b>${s.title}</b><span class="sub">${s.sub}</span></span>
+    <svg class="caret" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+   </summary>
+   <div class="body">
+    <p class="lead">${d.text}</p>
+    <ul class="tips">
+     ${extra.map(([a,b])=>tip(a,b,1)).join('')}
+     ${d.tips.map(([a,b])=>tip(a,b,0)).join('')}
+    </ul>
+    <p class="lnote">${d.note}</p>
+   </div>
+  </details>`;
+ }).join('');
+ el.querySelectorAll('.lstep').forEach(d=>d.addEventListener('toggle',()=>{
+  const ids=[...el.querySelectorAll('.lstep[open]')].map(x=>x.dataset.step);
+  store.set('fwc-open-'+elId,JSON.stringify(ids));
+  syncLoopToggle(elId);
+ }));
+ syncLoopToggle(elId);
+}
+function syncLoopToggle(elId){
+ const btn=document.querySelector(`[data-loop-toggle="${elId}"]`); if(!btn) return;
+ const all=document.querySelectorAll(`#${elId} .lstep`).length;
+ const open=document.querySelectorAll(`#${elId} .lstep[open]`).length;
+ const allOpen=all>0&&open===all;
+ btn.dataset.open=allOpen?'1':'0';
+ btn.textContent=allOpen?'Collapse all steps':'Expand all steps';
+}
+document.querySelectorAll('[data-loop-toggle]').forEach(btn=>{
+ btn.addEventListener('click',()=>{
+  const id=btn.dataset.loopToggle, open=btn.dataset.open!=='1';
+  document.querySelectorAll(`#${id} .lstep`).forEach(d=>{d.open=open});
+ });
 });
-trk.addEventListener('input',e=>{
- const t=e.target;
- if(t.dataset.ch){
-  const hero=t.dataset.ch;
-  state[hero]=state[hero]||{};
-  state[hero].chNum=+t.value;
-  const cap=CHAPTER_CAPS[state[hero].part||1];
-  const out=trk.querySelector(`[data-out="${hero}"]`);
-  if(out) out.textContent=`Ch ${t.value} / ${cap}`;
-  markUsed('chapter');
+function renderAllLoops(){renderLoop('loop1',steps1);renderLoop('loop2',steps2)}
+
+/* ---------- part switching inside the guide ---------- */
+function setPart(n,{push=true,save=true}={}){
+ currentPart=n;
+ document.querySelectorAll('#partSeg button').forEach(b=>
+  b.setAttribute('aria-pressed',+b.dataset.part===n?'true':'false'));
+ [1,2,3].forEach(p=>{
+  const el=document.getElementById('guideP'+p);
+  if(el) el.hidden=p!==n;
+ });
+ if(save){
+  heroState(currentHero).part=n;
+  heroState(currentHero).chNum=Math.min(heroChapter(currentHero),CHAPTER_CAPS[n]);
   saveState();
+  renderProgressUI();
+ }
+ if(push&&currentPage==='guide'){
+  const hash='#/guide/part-'+n;
+  if(location.hash!==hash) history.replaceState({page:'guide'},'',hash);
+ }
+}
+document.getElementById('partSeg').addEventListener('click',e=>{
+ const b=e.target.closest('[data-part]'); if(!b) return;
+ setPart(+b.dataset.part);
+ markUsed('part');
+});
+
+/* ---------- hero selection ---------- */
+function heroCards(){
+ return HEROES.map(h=>`<button type="button" class="hero-card" data-hero="${h.id}"
+   aria-pressed="${h.id===currentHero}">
+   <img src="assets/${h.id}.png" alt="" loading="lazy" width="160" height="346" />
+   <span class="hn">${h.name}</span>
+ </button>`).join('');
+}
+function selectHero(id,{quiet=false}={}){
+ currentHero=id;
+ store.set('fwc-route',id);
+ const hero=heroById(id);
+ document.querySelectorAll('[data-hero]').forEach(b=>
+  b.setAttribute('aria-pressed',b.dataset.hero===id?'true':'false'));
+ document.querySelectorAll('#heroRoleOverview,#heroRoleSheet').forEach(p=>p.textContent=hero.who);
+ document.getElementById('routeCard').textContent=routeText[id]||'';
+ const part=heroState(id).part||1;
+ setPart(part,{push:false,save:false});
+ renderProgressUI();
+ renderAllLoops();
+ renderRecruits();
+ if(!quiet) track('fw_route_selected',{route:id});
+}
+document.body.addEventListener('click',e=>{
+ const b=e.target.closest('[data-hero]'); if(!b) return;
+ selectHero(b.dataset.hero); markUsed('hero');
+});
+
+/* ---------- progress sheet ---------- */
+function renderProgressUI(){
+ const hero=heroById(currentHero);
+ const st=heroState(currentHero);
+ const part=st.part||1, cap=CHAPTER_CAPS[part]||10, ch=heroChapter(currentHero);
+ document.getElementById('ppImg').src='assets/'+hero.id+'.png';
+ document.getElementById('ppHero').textContent=hero.name;
+ document.getElementById('ppAt').textContent=`Part ${part} · Ch ${ch}`;
+ document.getElementById('chNum').textContent=ch;
+ document.getElementById('chCap').textContent='of '+cap;
+ const range=document.getElementById('chRange');
+ range.max=cap; range.value=ch;
+ document.getElementById('chDown').disabled=ch<=1;
+ document.getElementById('chUp').disabled=ch>=cap;
+ document.getElementById('chHint').textContent=part===3
+  ? 'Part 3 has only been described in sections so far — treat this cap loosely.'
+  : (part===2?'Part 2 is six chapters, the same for every hero.':'Part 1 route length is about 12 chapters.');
+ document.getElementById('notesLabel').textContent='Notes · '+hero.name;
+ const ta=document.getElementById('heroNote');
+ if(ta.value!==(st.note||'')) ta.value=st.note||'';
+ const seg=document.getElementById('sheetPartSeg');
+ seg.innerHTML=[1,2,3].map(n=>`<button type="button" data-sheet-part="${n}" aria-pressed="${part===n}">${n===2?'Part 2':'Part '+n}</button>`).join('');
+ const marks=recruitMarks(currentHero);
+ const total=hero.recruitData?RECRUITS.filter(c=>!isNA(c,hero)).length:0;
+ const got=Object.values(marks).filter(Boolean).length;
+ document.getElementById('recProgress').textContent=total?`Recruits ticked on this route: ${got} of ${total}.`:'';
+}
+function setChapter(v){
+ const st=heroState(currentHero), cap=CHAPTER_CAPS[st.part||1]||10;
+ st.chNum=Math.min(Math.max(v,1),cap);
+ renderProgressUI(); saveState(); markUsed('chapter');
+}
+document.getElementById('chUp').addEventListener('click',()=>setChapter(heroChapter(currentHero)+1));
+document.getElementById('chDown').addEventListener('click',()=>setChapter(heroChapter(currentHero)-1));
+document.getElementById('chRange').addEventListener('input',e=>{
+ document.getElementById('chNum').textContent=e.target.value;
+});
+document.getElementById('chRange').addEventListener('change',e=>setChapter(+e.target.value));
+document.getElementById('sheetPartSeg').addEventListener('click',e=>{
+ const b=e.target.closest('[data-sheet-part]'); if(!b) return;
+ setPart(+b.dataset.sheetPart,{push:false});
+ markUsed('part');
+});
+let noteDebounce;
+document.getElementById('heroNote').addEventListener('input',e=>{
+ heroState(currentHero).note=e.target.value;
+ saveState();
+ clearTimeout(noteDebounce);
+ noteDebounce=setTimeout(()=>markUsed('note'),2000);
+});
+
+/* ---------- dialogs ---------- */
+function openDlg(id){
+ const d=document.getElementById(id);
+ d.showModal();
+ return d;
+}
+document.body.addEventListener('click',e=>{
+ const b=e.target.closest('[data-close]'); if(!b) return;
+ document.getElementById(b.dataset.close)?.close();
+});
+document.getElementById('progressBtn').addEventListener('click',()=>{
+ renderProgressUI(); openDlg('progressDlg'); track('fw_progress_opened');
+});
+document.getElementById('menuBtn').addEventListener('click',()=>openDlg('menuDlg'));
+/* tap the backdrop to dismiss a sheet */
+document.querySelectorAll('dialog').forEach(d=>{
+ d.addEventListener('click',e=>{if(e.target===d) d.close()});
+});
+
+/* ---------- overview quick links ---------- */
+document.getElementById('jumpLinks').innerHTML=[
+ ['guide','<path d="M4 5.5h6a2 2 0 012 2V19a2 2 0 00-2-2H4z"/><path d="M20 5.5h-6a2 2 0 00-2 2V19a2 2 0 012-2h6z"/>','The Free Time loop','What to do with each Turn in Part 1'],
+ ['recruits','<circle cx="9" cy="9" r="3"/><path d="M3.8 19c.6-3 2.7-4.6 5.2-4.6S13.6 16 14.2 19"/><path d="M16 7.5a3 3 0 010 6M18 19c-.3-1.8-1-3.2-2-4.1"/>','Recruit requirements','Per-route Support, Renown and costs'],
+ ['reference','<path d="M6 4.5h9l4 4V19a1 1 0 01-1 1H6a1 1 0 01-1-1V5.5a1 1 0 011-1z"/><path d="M14.5 4.8v4h4.2M8.5 13h7M8.5 16.2h4.5"/>','Quick reference','Blaze Arts, durability, exams, Paralogues']
+].map(([page,icon,t,s])=>`<button data-page-jump="${page}">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icon}</svg>
+  <span><b>${t}</b><span>${s}</span></span>
+</button>`).join('');
+document.getElementById('jumpLinks').addEventListener('click',e=>{
+ const b=e.target.closest('[data-page-jump]'); if(!b) return;
+ showPage(b.dataset.pageJump); track('fw_tab_opened',{tab:b.dataset.pageJump,from:'overview'});
+});
+document.getElementById('heroGridOverview').innerHTML=heroCards();
+document.getElementById('heroGridSheet').innerHTML=heroCards();
+
+/* ---------- recruits ---------- */
+const ROUTES=HEROES.filter(h=>h.recruitData);
+const recPicks=document.getElementById('recRoutePicks');
+recPicks.innerHTML=ROUTES.map(r=>
+ `<button type="button" data-hero="${r.id}" aria-pressed="false">${r.name}</button>`).join('');
+const recList=document.getElementById('recList');
+let recQuery='', recFilter='all';
+const isNA=(c,hero)=>!hero.recruitData||/^not available$/i.test(c.reqs[hero.recruitData]||'');
+
+/* requirement string -> tag chips */
+function reqTags(req){
+ if(!req) return '';
+ if(/^automatic/i.test(req)) return `<span class="tag auto">${req.replace(/^a/,'A')}</span>`;
+ return req.split('·').map(p=>p.trim()).filter(Boolean).map(p=>{
+  const s=/^(\d+)S$/.exec(p), r=/^(\d+)R$/.exec(p);
+  if(s) return `<span class="tag s">Support ${s[1]}</span>`;
+  if(r) return `<span class="tag s">Renown ${r[1]}</span>`;
+  return `<span class="tag">${p}</span>`;
+ }).join('');
+}
+function renderRecruits(){
+ const hero=heroById(currentHero);
+ recPicks.querySelectorAll('button').forEach(b=>
+  b.setAttribute('aria-pressed',b.dataset.hero===currentHero?'true':'false'));
+ const marks=recruitMarks(currentHero);
+
+ if(!hero.recruitData){
+  recList.innerHTML=`<p class="empty">Per-character recruitment requirements haven’t been published for Eshmel’s solo path.<br />
+   Pick one of the four Hero routes above to see its table.</p>`;
+  document.getElementById('recCount').textContent='';
   return;
  }
- const hero=t.dataset.note;
- if(!hero) return;
- state[hero]=state[hero]||{};
- if(t.dataset.note){
-  state[hero].note=t.value;
-  clearTimeout(noteDebounce);
-  noteDebounce=setTimeout(()=>markUsed('note'),2000);
- }
- saveState();
-});
-trk.addEventListener('change',e=>{
- if(e.target.dataset.note) markUsed('note');
-});
+ const rows=RECRUITS
+  .filter(c=>!recQuery||c.name.toLowerCase().includes(recQuery))
+  .filter(c=>{
+   const done=!!marks[c.name];
+   return recFilter==='all'||(recFilter==='done'?done:!done&&!isNA(c,hero));
+  })
+  .sort((a,b)=>a.name.localeCompare(b.name));
+ const avail=RECRUITS.filter(c=>!isNA(c,hero));
+ const got=avail.filter(c=>marks[c.name]).length;
+ document.getElementById('recCount').innerHTML=
+  `<b>${got}</b> of <b>${avail.length}</b> recruited on the ${hero.name} route`+
+  (rows.length!==RECRUITS.length?` · showing ${rows.length}`:'');
 
-/* sync */
-const dlg=document.getElementById('syncDlg'),msg=document.getElementById('syncMsg');
-document.getElementById('syncBtn').onclick=()=>{
- msg.textContent='';
+ recList.innerHTML=rows.length?rows.map(c=>{
+  const req=c.reqs[hero.recruitData]||'';
+  const na=isNA(c,hero), done=!!marks[c.name];
+  return `<div class="rq${done?' done':''}${na?' na':''}">
+   <label>
+    <input type="checkbox" data-rec="${c.name}" ${done?'checked':''} ${na?'disabled':''} />
+    <span class="body">
+     <span class="nm">${c.name}</span>
+     <span class="reqs">${na?'<span class="tag">Not on this route</span>':reqTags(req)}</span>
+     ${c.note&&!na?`<span class="rq-note">${c.note}</span>`:''}
+    </span>
+   </label>
+  </div>`;
+ }).join(''):`<p class="empty">Nothing matches that filter.</p>`;
+}
+recPicks.addEventListener('click',e=>{
+ const b=e.target.closest('button'); if(b) track('fw_route_selected',{route:b.dataset.hero,from:'recruits'});
+});
+document.getElementById('recSearch').addEventListener('input',e=>{
+ recQuery=e.target.value.trim().toLowerCase(); renderRecruits();
+});
+document.getElementById('recFilterSeg').addEventListener('click',e=>{
+ const b=e.target.closest('[data-filter]'); if(!b) return;
+ recFilter=b.dataset.filter;
+ document.querySelectorAll('#recFilterSeg button').forEach(x=>
+  x.setAttribute('aria-pressed',x===b?'true':'false'));
+ renderRecruits();
+});
+recList.addEventListener('change',e=>{
+ const name=e.target.dataset.rec; if(!name) return;
+ const marks=recruitMarks(currentHero);
+ marks[name]=e.target.checked;
+ if(!marks[name]) delete marks[name];
+ saveState(); markUsed('recruit');
+ renderRecruits(); renderProgressUI();
+});
+const laterHtml=LATER.map(([p,t])=>`<li><strong>${p}</strong> — ${t}</li>`).join('');
+document.getElementById('laterList').innerHTML=laterHtml;
+document.getElementById('laterListP3').innerHTML=laterHtml;
+
+/* ---------- backup / restore ---------- */
+const dlg=document.getElementById('syncDlg'), msg=document.getElementById('syncMsg');
+function openSync(){
+ msg.textContent=''; msg.className='';
  document.getElementById('syncData').value=JSON.stringify(state,null,1);
+ document.getElementById('menuDlg').close();
  dlg.showModal();
  track('fw_sync_opened');
-};
-document.getElementById('closeDlg').onclick=()=>dlg.close();
-document.getElementById('copyBtn').onclick=async()=>{
- try{await navigator.clipboard.writeText(document.getElementById('syncData').value);msg.textContent='Copied.';track('fw_save_copied')}
- catch(e){document.getElementById('syncData').select();msg.textContent='Press Ctrl+C to copy'}
-};
-document.getElementById('downloadBtn').onclick=()=>{
+}
+document.getElementById('syncBtn').addEventListener('click',openSync);
+document.getElementById('footerSync').addEventListener('click',e=>{e.preventDefault();openSync()});
+document.getElementById('aboutBtn').addEventListener('click',()=>{
+ document.getElementById('menuDlg').close(); openDlg('aboutDlg'); track('fw_about_opened');
+});
+document.getElementById('aboutLink').addEventListener('click',e=>{
+ e.preventDefault(); openDlg('aboutDlg'); track('fw_about_opened');
+});
+document.getElementById('copyBtn').addEventListener('click',async()=>{
+ const ta=document.getElementById('syncData');
+ try{await navigator.clipboard.writeText(ta.value);msg.textContent='Copied.';msg.className='ok';track('fw_save_copied')}
+ catch(e){ta.select();msg.textContent='Press Ctrl+C to copy.';msg.className=''}
+});
+document.getElementById('downloadBtn').addEventListener('click',()=>{
  const a=document.createElement('a');
- a.href=URL.createObjectURL(new Blob([document.getElementById('syncData').value],{type:'application/json'}));
- a.download='fortunes-weave-companion-backup.json';
- a.click();
+ const url=URL.createObjectURL(new Blob([document.getElementById('syncData').value],{type:'application/json'}));
+ a.href=url; a.download='fortunes-weave-companion-backup.json'; a.click();
+ setTimeout(()=>URL.revokeObjectURL(url),1000);
  track('fw_backup_download');
-};
-document.getElementById('importBtn').onclick=()=>{
+});
+document.getElementById('loadFileBtn').addEventListener('click',()=>document.getElementById('importFile').click());
+document.getElementById('importFile').addEventListener('change',e=>{
+ const f=e.target.files?.[0]; if(!f) return;
+ const r=new FileReader();
+ r.onload=()=>{
+  document.getElementById('syncData').value=String(r.result||'');
+  msg.textContent='File loaded — press Restore to apply it.'; msg.className='ok';
+ };
+ r.onerror=()=>{msg.textContent='Could not read that file.';msg.className='err'};
+ r.readAsText(f);
+ e.target.value='';
+});
+document.getElementById('importBtn').addEventListener('click',()=>{
  const raw=document.getElementById('syncData').value;
  try{
   const data=JSON.parse(raw);
-  if(typeof data!=='object'||data===null) throw new Error();
-  try{localStorage.setItem(BACKUP_KEY,JSON.stringify(state))}catch(e){}
-  state=data; saveState(); track('fw_save_imported',{method:'paste'}); location.reload();
+  if(typeof data!=='object'||data===null||Array.isArray(data)) throw new Error('shape');
+  store.set(BACKUP_KEY,JSON.stringify(state));
+  state=data;
+  store.set(KEY,JSON.stringify(state));
+  track('fw_save_imported',{method:'paste'});
+  location.reload();
  }catch(e){
   msg.textContent='That isn’t valid backup data — nothing was changed.';
   msg.className='err';
   track('fw_save_import_failed',{method:'paste'});
  }
-};
-/* recruits tab */
-const recPicks=document.getElementById('recRoutePicks');
-recPicks.innerHTML=ROUTES.map(r=>`<button data-route="${r.id}" class="pills-btn">${r.label}</button>`).join('');
-const recList=document.getElementById('recList');
-let recQuery='';
-
-function renderRecruits(){
- recPicks.querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.route===currentHero));
- const r=currentHero;
- recList.innerHTML=RECRUITS
-  .filter(c=>!recQuery||c.name.toLowerCase().includes(recQuery))
-  .sort((a,b)=>a.name.localeCompare(b.name))
-  .map(c=>{
-   const req=c.reqs[r]||'';
-   return `<div class="rq">
-    <input type="checkbox" data-rec="${c.name}" ${state.recruits?.[c.name]?'checked':''} />
-    <span class="nm">${c.name}</span>
-    <span class="rr ${req==='not available'?'rec-hidden':''}">${req.replace(/(\d+)S/g,'Support $1').replace(/(\d+)R/g,'Renown $1')}${c.note?`<span class="rq-note">${c.note}</span>`:''}</span>
-   </div>`;
-  }).join('');
-}
-
-recPicks.addEventListener('click',e=>{
- const b=e.target.closest('button'); if(!b) return;
- selectHero(b.dataset.route);
- track('fw_route_selected',{route:b.dataset.route});
-});
-document.getElementById('recSearch').addEventListener('input',e=>{
- recQuery=e.target.value.toLowerCase();
- renderRecruits();
-});
-recList.addEventListener('change',e=>{
- const c=e.target.dataset.rec;
- if(!c) return;
- state.recruits=state.recruits||{};
- state.recruits[c]=e.target.checked;
- saveState();
- markUsed('recruit');
-});
-document.getElementById('laterList').innerHTML=LATER.map(([p,t])=>`<li><strong>${p}</strong> — ${t}</li>`).join('');
-
-/* about */
-const about=document.getElementById('aboutDlg');
-document.getElementById('aboutLink').onclick=e=>{e.preventDefault();about.showModal();track('fw_about_opened')};
-document.getElementById('closeAbout').onclick=()=>about.close();
-
-
-/* support links: header and footer Ko-fi */
-document.querySelectorAll('a[href*="ko-fi.com"]').forEach(a=>{
- a.addEventListener('click',()=>track('fw_support_click',{location:a.closest('footer')?'footer':'header'}));
 });
 
-/* restore state */
-selectHero(store.get('fwc-route')||'cai');
-
-const savedPart=store.get('fwc-part');
-if(savedPart&&savedPart!=='start'){
- const tab=[...document.querySelectorAll('nav button')].find(x=>x.dataset.page===savedPart);
- if(tab) tab.click();
-}
+/* ---------- boot ---------- */
+selectHero(currentHero,{quiet:true});
+applyHash(false);
 </script>
 </body>
 </html>

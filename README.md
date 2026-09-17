@@ -6,12 +6,22 @@ A free, ad-free, no-account fan companion for **Fire Emblem Fortune's Weave** (N
 
 ## What it does
 
-- **Start here** — verified game overview: Eshmel + the four Heroes (Cai, Dietrich, Theodora, Leda), two-era structure (Heroic Games 1449 → timeskip 1454), one-autosave warning
-- **Part I · Heroic Games** — decision-flow loop for the Dagsion Free Time cycle (turns, inns, Arena, Temple Row, world map, dungeons)
-- **Part II** — post-timeskip chapter loop (stays sparse until community-verified)
-- **Always useful** — quick refs: Blaze Arts discipline, Fortuna's Blessing, durability/enhancement, dungeon Clashes, recruiting
-- **My progress** — per-Hero chapter slider + notes, saved to localStorage
-- **Save backup / restore** — export/import as text or file, with validation and automatic one-step rollback of the previous state
+Four tabs, plus a progress tracker in the app bar.
+
+- **Overview** — game overview: Eshmel + the four Heroes (Cai, Dietrich, Theodora, Leda), the two-era structure (Heroic Games 1449 → timeskip 1454), the one-autosave warning, and the route picker
+- **Guide** — the loop for whichever part you're on. Part 1 is the Dagsion Free Time cycle (turns, weekly actions, world map, battle prep); Part 2 is the post-timeskip chapter loop; Part 3 stays sparse until community-verified. Route-specific tips are flagged inline.
+- **Recruits** — per-route Support/Renown/cost requirements as scannable chips, with name filter, all/still-to-get/recruited views, and per-route check-off
+- **Reference** — quick refs: Blaze Arts discipline, Fortuna's Blessing, durability/enhancement, dungeon Clashes, Paralogues, class exams
+- **My progress** — route, part, chapter and notes in one sheet, saved to localStorage
+- **Save backup / restore** — export as text or file, restore by paste or file load, with validation and automatic one-step rollback of the previous state
+
+Chapter checkmarks are tracked **per route**, since recruitment requirements differ per route. Saves from earlier versions (one shared checkmark list) migrate automatically onto the route that was last active.
+
+## Interface notes
+
+- Mobile-first: tabs sit in a bottom bar on phones and a top tab strip on wider screens; the progress tracker opens as a bottom sheet.
+- Light and dark themes, following the system preference until you override it.
+- Tabs are deep-linkable (`#/guide/part-2`, `#/recruits`) and work with the back button. Old-style links (`#p1`, `#always`) still resolve.
 
 ## Sources
 
