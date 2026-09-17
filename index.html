@@ -55,12 +55,11 @@ a{color:var(--accent)}
 .logo-band{background:#141210;border-radius:12px;padding:20px;text-align:center;margin-bottom:20px}
 .logo-band img{max-width:min(360px,80%)}
 .logo-chip{background:#141210;border-radius:8px;padding:6px 10px;display:inline-flex;align-items:center}
-#menuBtn{display:none;border:1px solid var(--line);background:var(--card);border-radius:8px;min-height:38px;padding:7px 12px;cursor:pointer;color:var(--ink)}
 
 .logo-chip img{width:120px;height:auto;display:block}
 .wrap{max-width:940px;margin:0 auto;padding:20px 16px 60px}
 
-.topbar{position:sticky;top:0;z-index:6;background:var(--bg);padding:max(6px,env(safe-area-inset-top)) max(14px,env(safe-area-inset-right)) 0 max(14px,env(safe-area-inset-left))}
+.topbar{background:var(--bg);padding:max(6px,env(safe-area-inset-top)) max(14px,env(safe-area-inset-right)) 0 max(14px,env(safe-area-inset-left))}
 header{display:flex;align-items:center;gap:12px;flex-wrap:wrap;max-width:940px;margin:0 auto;padding:6px 0 10px}
 .brand{display:flex;align-items:center;gap:10px;color:inherit;text-decoration:none}
 .brand strong{font-size:19px;display:block}
@@ -177,9 +176,6 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
   .cards,.trk{grid-template-columns:1fr}
   .node em{display:none}
   .wrap{padding:12px 12px calc(32px + env(safe-area-inset-bottom))}
-  #menuBtn{display:inline-flex;align-items:center}
-  nav{display:none;flex-wrap:wrap;padding:12px 0}
-  nav.menu-open{display:flex}
   nav button{padding:12px 14px;font-size:15px}
   .nav-long{display:none}
   .nav-short{display:inline}
@@ -229,7 +225,6 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
   <div class="actions">
     <button id="syncBtn">Backup / restore</button>
     <a class="chip-link" href="https://ko-fi.com/K3K11RWTSL" target="_blank" rel="noopener">Ko-fi</a>
-    <button id="menuBtn">Menu ▾</button>
   </div>
 </header>
 <nav>
@@ -413,7 +408,7 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
   Unofficial fan tool, not affiliated with Nintendo, Intelligent Systems, or Koei Tecmo.
   <a href="https://ko-fi.com/K3K11RWTSL" target="_blank" rel="noopener">Support on Ko-fi</a>.
   <a href="#" id="aboutLink">About</a>
-  <span style="margin-left:8px">build 18 — 17 Sep</span>
+  <span style="margin-left:8px">build 19 — 17 Sep</span>
   <p style="margin:8px 0 0">Umami measures visits and feature use. Notes, checkmarks and save contents stay in your browser and are never sent in events.</p>
 </footer>
 </div>
@@ -725,22 +720,20 @@ function renderAllLoops(){
 renderAllLoops();
 
 /* tabs */
-function closeMenu(){document.querySelector("nav").classList.remove("menu-open")}
 function showPage(id){
  document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===id));
  document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===id));
  if(id) store.set('fwc-part',id);
 }
 document.querySelectorAll('nav button').forEach(t=>{
- t.addEventListener('click',()=>{showPage(t.dataset.page);closeMenu();track('fw_tab_opened',{tab:t.dataset.page})});
+ t.addEventListener('click',()=>{showPage(t.dataset.page);track('fw_tab_opened',{tab:t.dataset.page})});
 });
 document.getElementById('homeLink').addEventListener('click',e=>{
  e.preventDefault();
  showPage(null);
  document.getElementById('start').classList.add('active');
  store.set('fwc-part','start');
- closeMenu();
- track('fw_tab_opened',{tab:'start'});
+  track('fw_tab_opened',{tab:'start'});
 });
 
 /* one shared hero (route) selector — synced everywhere */
@@ -924,14 +917,7 @@ document.getElementById('laterList').innerHTML=LATER.map(([p,t])=>`<li><strong>$
 const about=document.getElementById('aboutDlg');
 document.getElementById('aboutLink').onclick=e=>{e.preventDefault();about.showModal();track('fw_about_opened')};
 document.getElementById('closeAbout').onclick=()=>about.close();
-/* menu: toggled by Menu button; open by default (preference remembered, works even if other listeners fail) */
-document.addEventListener('click',e=>{
- if(!e.target.closest('#menuBtn')) return;
- const navEl=document.querySelector('nav');
- const open=navEl.classList.toggle('menu-open');
- store.set('fwc-menu',open?'open':'closed');
- if(navigator.vibrate) navigator.vibrate(8);
-});
+
 
 /* support links: header and footer Ko-fi */
 document.querySelectorAll('a[href*="ko-fi.com"]').forEach(a=>{
@@ -939,7 +925,6 @@ document.querySelectorAll('a[href*="ko-fi.com"]').forEach(a=>{
 });
 
 /* restore state */
-if(store.get('fwc-menu')!=='closed') document.querySelector('nav').classList.add('menu-open');
 selectHero(store.get('fwc-route')||'cai');
 
 const savedPart=store.get('fwc-part');
