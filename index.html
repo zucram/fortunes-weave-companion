@@ -181,8 +181,6 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
   <button data-page="p2">Part 2 · After the timeskip</button>
   <button data-page="p3">Part 3</button>
   <button data-page="recruits">Recruits</button>
-  <button data-page="always">Reference</button>
-  <button data-page="tracker">Progress</button>
 </nav>
 
 <section id="start" class="page active">
@@ -225,6 +223,11 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
 
     <div class="flow" id="flow1"></div>
     <div class="detail" id="detail1"></div>
+  </div>
+  <div class="section">
+    <h2>Route progress</h2>
+    <p>Chapter markers and notes for each hero, right where you pick a route. Everything stays in this browser; <em>Backup / restore</em> moves it to another device.</p>
+    <div class="trk" id="trkGrid"></div>
   </div>
 </section>
 
@@ -350,20 +353,11 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
   </div>
 </section>
 
-<section id="tracker" class="page">
-  <div class="section">
-    <h2>Progress</h2>
-    <p>Chapter markers and notes for each hero. Everything stays in this browser; use <em>Backup / restore</em> to move it to another device.</p>
-    <div class="trk" id="trkGrid"></div>
-  </div>
-  <div class="callout">Hero notes also show while you play their route in the Heroic Games tab.</div>
-</section>
-
 <footer>
   Unofficial fan tool, not affiliated with Nintendo, Intelligent Systems, or Koei Tecmo.
   <a href="https://ko-fi.com/K3K11RWTSL" target="_blank" rel="noopener">Support on Ko-fi</a>.
   <a href="#" id="aboutLink">About</a>
-  <span style="margin-left:8px">build 2 — 17 Sep</span>
+  <span style="margin-left:8px">build 3 — 17 Sep</span>
 </footer>
 </div>
 
@@ -590,32 +584,49 @@ const steps2=[
 /* per-route differences inside the shared loop */
 const FLOW_TIPS={
  cai:{
-  zero:[['Stable feeding','Cai-only weekly action: feed the stable to keep mounts ready.']],
-  spend:[['Stable','His path is where stable feeding exists — check it before leaving for the map.']],
-  world:[['Tame the mounts','Wild mounts are a Cai exclusive; tamed ones persist between chapters.']],
-  battle:[['Fire-burst Blaze Art','His super excels at clearing groups around a broken point.']]
+  free:[['Watch for wild mounts','Cai’s map power tames them — free, and mounts persist between chapters.']],
+  zero:[['Stable feeding','His route’s weekly exclusive action; the other heroes don’t get it.']],
+  spend:[['Stable plus Arena','Same-week combo: feed the stable, then train mounted proficiencies.']],
+  world:[['Ride the mounts','Tamed mounts pay off on long Dagda loops — plan one big run.']],
+  prep:[['Mounts in the roster','Deploy them on spread-out maps for repositions others can’t match.']],
+  battle:[['Fire-burst Blaze Art','Groups die to it — save the gauge for packed maps.']],
+  deadline:[['Mounted missions','Distant mission locations are less of a chore when Mounts cut travel Turns.']]
  },
  dietrich:{
-  world:[['Reveal the map','His ability uncovers hidden enemies and locations — sweep an area before committing Turns elsewhere.']],
-  prep:[['The Answerer','Budget durability around his relic; relict weapons want proficiencies, not impulse Arts.']],
-  battle:[['Teleport Blaze Art','His super repositions — plan the landing square and the counter it eats.']]
+  free:[['Plan the sweep','His reveal ability is map-free scouting — decide the sweep route before spending Turns.']],
+  zero:[['Relic upkeep','The Answerer and warp play lean on weapons — price out enhancements weekly.']],
+  spend:[['Feed him Arena EXP','Relic proficiency shaves exam thresholds; Dietrich proficiencies first.']],
+  world:[['Reveal first','Swipe an area for hidden enemies and paths before committing Turns elsewhere.']],
+  prep:[['The Answerer','Budget durability around the relic; it eats proficiencies, not impulses.']],
+  battle:[['Teleport Blaze Art','Plan the landing tile and the counter it provokes — it’s a position win, not raw damage.']],
+  deadline:[['Reveal on the way','If the mission is far away, sweep secrets while traveling — never backtrack for scouting.']]
  },
  theodora:{
-  world:[['Recruit troops','She gathers soldiers on the map to aid exploration and battles — spend her power before leaving an area.']],
-  spend:[['Gambits','Her skillset leans on control; keep gambit users adjacent in the roster.']],
-  battle:[['Earthen Throw','Her super is a control tool — stall the dangerous side of the map while you score elsewhere.']]
+  free:[['Renown targets first','Several recruits on her route are Renown-gated, so clear Renown-paying quests early.']],
+  zero:[['Audience planning','Spending audiences and Blessing work here compounds globally (over) all routes.']],
+  spend:[['Gambit economy','Route focus is control — keep gambit users stocked next to her.']],
+  world:[['Recruit troops','She gathers soldiers to aid exploration and battles — spend the power before moving on.']],
+  prep:[['Control lead','Her roster’s synergy is upfront stalling, so the gambit users deploy where the fight leans.']],
+  battle:[['Earthen Throw','Stall the dangerous side of the map for a turn while scoring elsewhere.']],
+  deadline:[['Renown first, travel later','Her route’s recruits want Renown — chase decayed early.']]
  },
  leda:{
-  zero:[['Watch for performances','Her inn shows and her route chains into free extra rewards if you time them with weekly refreshes.']],
-  spend:[['Perform at inns','Stacks with regular inn turns for XP plus materials — bundle shows with every meal.']],
-  world:[['Inns on the route','Pass through inn towns even when you do not need to rest; and look for her song buffs that swing a fight.']],
-  battle:[['Song buffs','Her super buffs the team or summons — deploy it to window for a big turn, not as raw damage.']]
+  free:[['Show scheduling','Inn shows on her route time well with weekly replenish — bundle them.']],
+  zero:[['Performance prep','Theater availability opens more shows on her route — worth checking each week.']],
+  spend:[['Perform at every inn','Shows stack with inn turns for XP plus extra rewards.']],
+  world:[['Route through inn towns','Pass through them even without resting; performances are free value.']],
+  prep:[['Buff window','Set one song-turn target per map before deploying.']],
+  battle:[['Song buffs and summons','Use it as a turn-window setup, not raw damage.']],
+  deadline:[['Shows on the calendar','Some rewards only recur before the deadline; don’t skip them on autopilot']]
  },
  eshmel:{
-  free:[['Smaller roster','The solo path faces Balor without the Heroes — plan for a tighter team from ch. 1.']],
-  spend:[['Invest early','Fewer recruits means each party slot is precious — level your core first.']],
-  prep:[['You are the super','Your Blaze Art is doing the hero work; budget HP and gauge earlier.']],
-  battle:[['Boss discipline','Balor-route bosses punish sloppy positioning — rewind sooner.']]
+  free:[['Tighter roster','The solo path faces Balor with fewer Heroes — plan a core team from ch. 1.']],
+  zero:[['Budget early','Smaller income means fewer impulse purchases; keep gold for class exams.']],
+  spend:[['Invest in the core','Fewer recruits means each slot is precious — level your main four to five first.']],
+  world:[['Solo scouting','Without the Heroes’ map powers, save dungeon entries for when the team is ready.']],
+  prep:[['You are the super','Your Blaze Art is the hero work — budget HP and gauge earlier.']],
+  battle:[['Boss discipline','Balor-route bosses punish sloppy positioning; rewind sooner, not later.']],
+  deadline:[['No safety net','With a smaller bench, Fortuna’s Blessing is your whole insurance — budget rewinds.']]
  }
 };
 
