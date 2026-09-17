@@ -74,6 +74,8 @@ h2{font-size:19px;margin:6px 0 10px}
   padding:7px 13px;cursor:pointer;color:var(--muted)
 }
 .picks button.active{background:var(--accent-soft);border-color:var(--accent);color:var(--ink)}
+.picks img.pp{width:24px;height:24px;object-fit:cover;border-radius:50%;vertical-align:-5px;margin-right:6px;background:#000}
+.picks button{display:inline-flex;align-items:center;gap:2px}
 #routeCard{color:var(--muted);font-size:14px;margin:4px 0 16px}
 
 /* loop steps */
@@ -167,7 +169,7 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
 <div class="wrap">
 
 <header>
-  <h1 class="app-title">Fortune's Weave Companion <span>fan-made planner</span></h1>
+  <h1 class="app-title"><a href="#" id="homeLink" style="color:inherit;text-decoration:none">Fortune’s Weave Companion</a> <span>fan-made planner</span></h1>
   <div class="actions">
     <span id="saveStatus" style="color:var(--muted)"></span>
     <button id="syncBtn">Backup / restore</button>
@@ -176,7 +178,6 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
 </header>
 
 <nav>
-  <button class="active" data-page="start">Start here</button>
   <button data-page="p1">Part 1 · Heroic Games</button>
   <button data-page="p2">Part 2 · After the timeskip</button>
   <button data-page="p3">Part 3</button>
@@ -353,7 +354,7 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
   Unofficial fan tool, not affiliated with Nintendo, Intelligent Systems, or Koei Tecmo.
   <a href="https://ko-fi.com/K3K11RWTSL" target="_blank" rel="noopener">Support on Ko-fi</a>.
   <a href="#" id="aboutLink">About</a>
-  <span style="margin-left:8px">build 6 — 17 Sep</span>
+  <span style="margin-left:8px">build 7 — 17 Sep</span>
 </footer>
 </div>
 
@@ -653,14 +654,19 @@ function renderAllLoops(){
 renderAllLoops();
 
 /* tabs */
+function showPage(id){
+ document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===id));
+ document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===id));
+ if(id) store.set('fwc-part',id);
+}
 document.querySelectorAll('nav button').forEach(t=>{
- t.addEventListener('click',()=>{
-  document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));
-  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
-  t.classList.add('active');
-  document.getElementById(t.dataset.page).classList.add('active');
-  store.set('fwc-part',t.dataset.page);
- });
+ t.addEventListener('click',()=>showPage(t.dataset.page));
+});
+document.getElementById('homeLink').addEventListener('click',e=>{
+ e.preventDefault();
+ showPage(null);
+ document.getElementById('start').classList.add('active');
+ store.set('fwc-part','start');
 });
 
 /* one shared hero (route) selector — synced everywhere */
@@ -676,7 +682,7 @@ function selectHero(id){
 
 /* hero picks (inline switcher on the Games tab) */
 const picks=document.getElementById('routePicks');
-picks.innerHTML=HEROES.map(h=>`<button data-route="${h.id}">${h.name}</button>`).join('');
+picks.innerHTML=HEROES.map(h=>`<button data-route="${h.id}"><img src="assets/${h.id}.png" alt="" class="pp" />${h.name}</button>`).join('');
 picks.addEventListener('click',e=>{
  const b=e.target.closest('button'); if(!b) return;
  selectHero(b.dataset.route);
