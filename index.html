@@ -155,9 +155,9 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
 .rq .nm{font-weight:600;min-width:110px}
 .rq .rr{color:var(--muted);font-size:14px}
 .rq .rq-note{display:block;color:var(--muted);font-size:13px}
-.pills{display:flex;gap:8px;flex-wrap:wrap}
-.tips li.route-tip{background:var(--accent-soft)}
 .trk-hero.picked{border-color:var(--accent)}
+.trk-hero{cursor:pointer}
+.picked-tag{font-weight:600}
 .rec-hidden{color:#b5aca0}
 .rec-row-label{display:flex;align-items:center;gap:10px}
 
@@ -217,17 +217,12 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
 <section id="p1" class="page">
   <div class="section">
     <h2>Part 1 · The Heroic Games loop</h2>
-    <p>Free Time runs on a clock: about 11 in-game months from preliminaries to the final match. Pick the hero you're playing as — their notes are below.</p>
-    <div class="picks" id="routePicks"></div>
+    <p>Free Time runs on a clock: about 11 in-game months from preliminaries to the final match. Pick the hero you're playing as — tap a card below; the loop and your notes follow that route.</p>
+    <div class="trk" id="trkGrid"></div>
     <div id="routeCard"></div>
 
     <div class="flow" id="flow1"></div>
     <div class="detail" id="detail1"></div>
-  </div>
-  <div class="section">
-    <h2>Route progress</h2>
-    <p>Chapter markers and notes for each hero, right where you pick a route. Everything stays in this browser; <em>Backup / restore</em> moves it to another device.</p>
-    <div class="trk" id="trkGrid"></div>
   </div>
 </section>
 
@@ -357,7 +352,7 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
   Unofficial fan tool, not affiliated with Nintendo, Intelligent Systems, or Koei Tecmo.
   <a href="https://ko-fi.com/K3K11RWTSL" target="_blank" rel="noopener">Support on Ko-fi</a>.
   <a href="#" id="aboutLink">About</a>
-  <span style="margin-left:8px">build 3 — 17 Sep</span>
+  <span style="margin-left:8px">build 4 — 17 Sep</span>
 </footer>
 </div>
 
@@ -682,7 +677,11 @@ function selectHero(id){
  store.set('fwc-route',id);
  document.getElementById('routeCard').textContent=routeText[id];
  document.querySelectorAll('[data-route]').forEach(x=>x.classList.toggle('active',x.dataset.route===id));
- document.querySelectorAll('.trk-hero').forEach(c=>c.classList.toggle('picked',c.dataset.hero===id));
+ document.querySelectorAll('.trk-hero').forEach(c=>{
+  c.classList.toggle('picked',c.dataset.hero===id);
+  c.querySelector('.picked-tag').textContent=c.dataset.hero===id?'Playing this route':'Tap to play this route';
+  c.querySelector('.picked-tag').style.color=c.dataset.hero===id?'var(--accent)':'var(--muted)';
+ });
  Object.values(FLOWS).forEach(f=>{
   const s=f.steps.find(x=>x.id===f.activeId)||f.steps[0];
   renderDetail(f.list,{...s.detail,step:s.id});
@@ -690,13 +689,7 @@ function selectHero(id){
  renderRecruits();
 }
 
-/* hero picks (inline switcher on the Games tab) */
-const picks=document.getElementById('routePicks');
-picks.innerHTML=HEROES.map(h=>`<button data-route="${h.id}">${h.name}</button>`).join('');
-picks.addEventListener('click',e=>{
- const b=e.target.closest('button'); if(!b) return;
- selectHero(b.dataset.route);
-});
+/* hero selection lives on the route cards (trkGrid) only */
 
 /* tracker */
 const KEY='fwc-progress-v1', BACKUP_KEY='fwc-progress-backup-v1';
@@ -717,14 +710,12 @@ grid.innerHTML=HEROES.map(h=>`
   <p class="picked-tag" style="color:var(--accent);margin:0 0 6px;font-size:13px;min-height:18px"></p>
   <div class="trk-row"><input type="range" min="0" max="30" value="${state[h.id]?.chNum||0}" data-ch="${h.id}" /><span class="pct" data-out="${h.id}">${state[h.id]?.ch||'—'}</span></div>
   <textarea placeholder="Notes — recruits, deadlines, class plans…" data-note="${h.id}">${state[h.id]?.note||''}</textarea>
-  <button class="pick-hero" data-pick="${h.id}" style="margin-top:8px">View this route's flow →</button>
  </div>`).join('');
 
 grid.addEventListener('click',e=>{
- const b=e.target.closest('[data-pick]');
- if(!b) return;
- selectHero(b.dataset.pick);
- document.querySelector('nav [data-page="p1"]').click();
+ if(e.target.closest('input,textarea')) return;
+ const card=e.target.closest('.trk-hero'); if(!card) return;
+ selectHero(card.dataset.hero);
 });
 grid.addEventListener('input',e=>{
  const t=e.target, hero=t.dataset.ch||t.dataset.note;
@@ -814,9 +805,7 @@ document.getElementById('aboutLink').onclick=e=>{e.preventDefault();about.showMo
 document.getElementById('closeAbout').onclick=()=>about.close();
 
 /* restore state */
-const savedRoute=store.get('fwc-route')||'cai';
-const routeBtn=picks.querySelector(`[data-route="${savedRoute}"]`)||picks.querySelector('button');
-routeBtn.click();
+selectHero(store.get('fwc-route')||'cai');
 
 const savedPart=store.get('fwc-part');
 if(savedPart&&savedPart!=='start'){
