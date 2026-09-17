@@ -72,6 +72,8 @@ header .actions button{
   padding:6px 12px;cursor:pointer;color:var(--ink)
 }
 header .actions button:hover{border-color:var(--line2)}
+.trk-hud{border:1px solid var(--line);border-radius:10px;background:var(--card);padding:10px 12px}
+.trk-hud details textarea{width:100%;margin-top:8px;border:1px solid var(--line);border-radius:8px;background:#fcfaf6;padding:8px;font:13px/1.5 ui-monospace,monospace;min-height:64px;resize:vertical}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom));
   background:#3d3524;color:#f5eeda;font-size:12px;padding:7px 14px;border-radius:999px;
   opacity:0;transition:opacity .4s;pointer-events:none;z-index:50}
@@ -236,6 +238,9 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
   <button data-page="recruits"><span class="nav-long">Recruits</span><span class="nav-short">Recruits</span></button>
   <button data-page="always"><span class="nav-long">Reference</span><span class="nav-short">Reference</span></button>
 </nav>
+<div class="section" id="hud">
+  <div class="trk-hud" id="trkSingle"></div>
+</div>
 </div>
 
 <section id="start" class="page active">
@@ -272,11 +277,8 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
 <section id="p1" class="page">
   <div class="section">
     <h2>Part 1 · The Heroic Games loop</h2>
-    <p>Free Time runs on a clock: about 11 in-game months from preliminaries to the final match. Pick the hero you're playing as — the loop and your notes follow that route.</p>
-    <div class="picks" id="routePicks"></div>
+    <p>Free Time runs on a clock: about 11 in-game months from preliminaries to the final match. The HUD above picks the hero — the loop below follows that route.</p>
     <div id="routeCard"></div>
-
-    <div class="card" id="trkSingle"></div>
 
     <div class="loop" id="loop1"></div>
   </div>
@@ -408,7 +410,7 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
   Unofficial fan tool, not affiliated with Nintendo, Intelligent Systems, or Koei Tecmo.
   <a href="https://ko-fi.com/K3K11RWTSL" target="_blank" rel="noopener">Support on Ko-fi</a>.
   <a href="#" id="aboutLink">About</a>
-  <span style="margin-left:8px">build 19 — 17 Sep</span>
+  <span style="margin-left:8px">build 20 — 17 Sep</span>
   <p style="margin:8px 0 0">Umami measures visits and feature use. Notes, checkmarks and save contents stay in your browser and are never sent in events.</p>
 </footer>
 </div>
@@ -747,15 +749,6 @@ function selectHero(id){
  renderRecruits();
 }
 
-/* hero picks (inline switcher on the Games tab) */
-const picks=document.getElementById('routePicks');
-picks.innerHTML=HEROES.map(h=>`<button data-route="${h.id}"><img src="assets/${h.id}.png" alt="" class="pp" />${h.name}</button>`).join('');
-picks.addEventListener('click',e=>{
- const b=e.target.closest('button'); if(!b) return;
- selectHero(b.dataset.route);
- track('fw_route_selected',{route:b.dataset.route});
-});
-
 /* tracker */
 const KEY='fwc-progress-v1', BACKUP_KEY='fwc-progress-backup-v1';
 function loadState(){
@@ -782,18 +775,19 @@ function buildTrk(){
  const cap=CHAPTER_CAPS[part]||10;
  const ch=Math.min(Math.max(parseInt(st.chNum,10)||1,1),cap);
  document.getElementById('trkSingle').innerHTML=`
-  <h3>${h.name} — where you are <span style="color:var(--muted);font-weight:400;font-size:13px">(saved in this browser)</span></h3>
+  <div class="trk-row">
+   ${HEROES.map(x=>`<button type="button" class="mini${x.id===h.id?' act':''}" data-pp="${x.id}" data-hero="${x.id}">${x.name}</button>`).join('')}
+  </div>
   <div class="trk-row">
    <span class="k">Part</span>
    ${[1,2,3].map(n=>`<button type="button" class="mini${part===n?' act':''}" data-pp="${h.id}" data-part="${n}">${n===2?'Part 2 · War':'Part '+n}</button>`).join('')}
-  </div>
-  <div class="trk-row">
-   <span class="k">Chapter</span>
-   <input type="range" style="flex:1;accent-color:var(--accent)" min="1" max="${cap}" value="${ch}" data-ch="${h.id}" />
+   <input type="range" style="flex:1;min-width:120px;accent-color:var(--accent)" min="1" max="${cap}" value="${ch}" data-ch="${h.id}" />
    <span class="pct" data-out="${h.id}">Ch ${ch} / ${cap}</span>
   </div>
   ${part===3?'<p style="font-size:12px;color:var(--muted);margin:4px 0 0">Part 3 was described by sections so far — the cap here is a guess; treat it loosely.</p>':''}
-  <textarea placeholder="Notes — recruits, deadlines, class plans…" data-note="${h.id}">${st.note||''}</textarea>`;
+  <details style="margin-top:6px"><summary style="cursor:pointer;font-size:13px;color:var(--muted)">Notes (${h.name})</summary>
+   <textarea placeholder="Recruits, deadlines, class plans…" data-note="${h.id}">${st.note||''}</textarea>
+  </details>`;
 }
 const CHAPTER_CAPS={1:12,2:6,3:10};
 
@@ -801,6 +795,7 @@ const trk=document.getElementById('trkSingle');
 let noteDebounce;
 trk.addEventListener('click',e=>{
  const btn=e.target.closest('[data-pp]'); if(!btn) return;
+ if(btn.dataset.hero){selectHero(btn.dataset.hero);markUsed('hero');return}
  const hero=btn.dataset.pp;
  state[hero]=state[hero]||{};
  if(btn.dataset.part){
