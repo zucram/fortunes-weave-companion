@@ -223,8 +223,7 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
 
     <div class="card" id="trkSingle"></div>
 
-    <div class="flow" id="flow1"></div>
-    <div class="detail" id="detail1"></div>
+    <div class="loop" id="loop1"></div>
   </div>
 </section>
 
@@ -233,8 +232,7 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
     <h2>Part 2 · After the timeskip</h2>
     <p>Five years after the Games, the story continues chapter to chapter. The calendar loop is gone. Notes here stay general until community guides have covered the chapters.</p>
 
-    <div class="flow" id="flow2"></div>
-    <div class="detail" id="detail2"></div>
+    <div class="loop" id="loop2"></div>
     <div class="callout">Don't carry the Dagsion weekly routine into Part 2 — there's no Free Time economy anymore. Part 2 also has catch-up methods for units you benched in Part 1.</div>
   </div>
 </section>
@@ -328,6 +326,7 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
     <p>Part 1 recruitment has four parts: the character's <strong>Support with your lord</strong> (S), your <strong>Renown level</strong> (R), usually a quest, item, or payment, and sometimes a Paralogue. Pick the route you're playing to see that route's requirements; tick characters once they've joined.</p>
 
     <div class="picks" id="recRoutePicks"></div>
+    <p style="color:var(--muted);font-size:13px;margin:6px 0">S = Support level with your lord · R = your global Renown level</p>
 
     <div class="card" style="margin:10px 0 16px">
       <h3>How it works</h3>
@@ -354,7 +353,7 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
   Unofficial fan tool, not affiliated with Nintendo, Intelligent Systems, or Koei Tecmo.
   <a href="https://ko-fi.com/K3K11RWTSL" target="_blank" rel="noopener">Support on Ko-fi</a>.
   <a href="#" id="aboutLink">About</a>
-  <span style="margin-left:8px">build 5 — 17 Sep</span>
+  <span style="margin-left:8px">build 6 — 17 Sep</span>
 </footer>
 </div>
 
@@ -627,40 +626,31 @@ const FLOW_TIPS={
  }
 };
 
-function renderDetail(list,d){
- const extra=(currentHero&&FLOW_TIPS[currentHero]&&FLOW_TIPS[currentHero][d.step])||[];
- const hero=HEROES.find(h=>h.id===currentHero);
- list.innerHTML=`
-  <span class="badge">${hero?hero.name+' route · ':''}${d.text}</span>
-  <ul class="tips">
-   ${extra.map(([a,b])=>`<li class="route-tip"><strong>${a}</strong> — <span>${b}</span></li>`).join('')}
-   ${d.tips.map(([a,b])=>`<li><strong>${a}</strong> — <span>${b}</span></li>`).join('')}
-  </ul>
-  <div class="callout">${d.note}</div>`;
-}
-
-/* loop rendering */
+/* loop rendering: everything visible, no clicks */
 let currentHero=store.get('fwc-route')||'cai';
-const FLOWS={};
-function renderFlow(flowId,detailId,steps){
- const flow=document.getElementById(flowId);
- const list=document.getElementById(detailId);
- FLOWS[flowId]={flow,list,steps,activeId:steps[0].id};
- flow.innerHTML=steps.map(s=>
-  `<button class="node" data-step="${s.id}"><span class="n">${s.n}</span><b>${s.title}</b><em>${s.sub}</em></button>`).join('');
- flow.addEventListener('click',e=>{
-  const b=e.target.closest('.node'); if(!b) return;
-  flow.querySelectorAll('.node').forEach(x=>x.classList.remove('active'));
-  b.classList.add('active');
-  FLOWS[flowId].activeId=b.dataset.step;
-  const s=steps.find(x=>x.id===b.dataset.step);
-  renderDetail(list,{...s.detail,step:s.id});
- });
- renderDetail(list,{...steps[0].detail,step:steps[0].id});
- flow.querySelector('.node').classList.add('active');
+
+function renderLoop(elId,steps){
+ const hero=HEROES.find(h=>h.id===currentHero);
+ const tipHtml=(a,b,route)=>`<li${route?' class="route-tip"':''}><strong>${a}</strong> — <span>${b}</span></li>`;
+ document.getElementById(elId).innerHTML=steps.map(s=>{
+  const extra=(hero&&FLOW_TIPS[hero.id]&&FLOW_TIPS[hero.id][s.id])||[];
+  const d=s.detail;
+  return `<div class="lstep">
+   <h3><span class="n">${s.n}</span> ${s.title} <span class="sub">${s.sub}</span></h3>
+   <p class="lead">${hero?hero.name+' route · ':''}${d.text}</p>
+   <ul class="tips">
+    ${extra.map(([a,b])=>tipHtml(a,b,1)).join('')}
+    ${d.tips.map(([a,b])=>tipHtml(a,b,0)).join('')}
+   </ul>
+   <p class="lnote">${d.note}</p>
+  </div>`;
+ }).join('');
 }
-renderFlow('flow1','detail1',steps1);
-renderFlow('flow2','detail2',steps2);
+function renderAllLoops(){
+ renderLoop('loop1',steps1);
+ renderLoop('loop2',steps2);
+}
+renderAllLoops();
 
 /* tabs */
 document.querySelectorAll('nav button').forEach(t=>{
@@ -680,10 +670,7 @@ function selectHero(id){
  document.getElementById('routeCard').textContent=routeText[id];
  document.querySelectorAll('[data-route]').forEach(x=>x.classList.toggle('active',x.dataset.route===id));
  buildTrk();
- Object.values(FLOWS).forEach(f=>{
-  const s=f.steps.find(x=>x.id===f.activeId)||f.steps[0];
-  renderDetail(f.list,{...s.detail,step:s.id});
- });
+ renderAllLoops();
  renderRecruits();
 }
 
@@ -776,7 +763,7 @@ function renderRecruits(){
    return `<div class="rq">
     <input type="checkbox" data-rec="${c.name}" ${state.recruits?.[c.name]?'checked':''} />
     <span class="nm">${c.name}</span>
-    <span class="rr ${req==='not available'?'rec-hidden':''}">${req}${c.note?`<span class="rq-note">${c.note}</span>`:''}</span>
+    <span class="rr ${req==='not available'?'rec-hidden':''}">${req.replace(/(\d+)S/g,'Support $1').replace(/(\d+)R/g,'Renown $1')}${c.note?`<span class="rq-note">${c.note}</span>`:''}</span>
    </div>`;
   }).join('');
 }
