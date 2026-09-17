@@ -56,7 +56,7 @@ a{color:var(--accent)}
 .logo-band img{max-width:min(360px,80%)}
 .logo-chip{background:#141210;border-radius:8px;padding:6px 10px;display:inline-flex;align-items:center}
 #menuBtn{display:none;border:1px solid var(--line);background:var(--card);border-radius:8px;min-height:38px;padding:7px 12px;cursor:pointer;color:var(--ink)}
-nav.menu-open .hide-menu{display:flex}
+
 .logo-chip img{width:120px;height:auto;display:block}
 .wrap{max-width:940px;margin:0 auto;padding:20px 16px 60px}
 
@@ -153,6 +153,9 @@ h2{font-size:19px;margin:6px 0 10px}
 .trk .card textarea:focus{outline:1px solid var(--line2)}
 .trk-row{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
 .trk-row input[type=range]{flex:1;accent-color:var(--accent)}
+.trk-row .k{font-size:13px;color:var(--muted);min-width:52px;text-transform:uppercase;letter-spacing:.06em}
+button.mini{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:6px 12px;cursor:pointer;color:var(--ink);min-height:38px}
+button.mini.act{background:var(--accent-soft);border-color:var(--accent);font-weight:600}
 .trk-row .pct{min-width:48px;text-align:right;font-variant-numeric:tabular-nums;color:var(--ink)}
 
 footer{margin-top:40px;padding-top:14px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
@@ -407,7 +410,7 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
   Unofficial fan tool, not affiliated with Nintendo, Intelligent Systems, or Koei Tecmo.
   <a href="https://ko-fi.com/K3K11RWTSL" target="_blank" rel="noopener">Support on Ko-fi</a>.
   <a href="#" id="aboutLink">About</a>
-  <span style="margin-left:8px">build 13 — 17 Sep</span>
+  <span style="margin-left:8px">build 14 — 17 Sep</span>
   <p style="margin:8px 0 0">Umami measures visits and feature use. Notes, checkmarks and save contents stay in your browser and are never sent in events.</p>
 </footer>
 </div>
@@ -614,7 +617,7 @@ const steps2=[
     ['Classes','Borrow useful abilities from exam classes instead of settling on one.'],
     ['One path at a time','Paths can run in any order — finishing one carries map exploration and completed subquests into the next, so it is usually cheaper to finish before switching.']
    ],
-   note:'Five years pass in-story between parts; re-check the roster after the timeskip.'}},
+   note:'Part 2 is six chapters, identical for every protagonist.'}},
  {id:'p2chapter',n:'2', title:'Chapter check', sub:'what’s special here',
   detail:{text:'Read the map before deploying.',
    tips:[
@@ -635,7 +638,9 @@ const steps2=[
   detail:{text:'Small adjustments between maps.',
    tips:[
     ['Who underperformed?','Stats, positioning, or the wrong role?'],
-    ['Materials','Point dungeon income at your core team’s weapons.'],
+    ['Licenses refill every chapter','5 Advanced (plus Beginner/Specialty) licenses — spend them each chapter.'],
+    ['One Dispatch per chapter','Pick Training Drills (levels), Group Drills (skills) or Group Service (tribute).'],
+    ['War runs repeat','Each Hero needs their own War path for Part 3 participation — or use the Skip option after the first.'],
     ['Don’t overgrind','The war is structured to keep moving.']
    ],
    note:'Then back to Preparation for the next chapter.'}}
@@ -717,19 +722,21 @@ function renderAllLoops(){
 renderAllLoops();
 
 /* tabs */
+function closeMenu(){document.querySelector("nav").classList.remove("menu-open")}
 function showPage(id){
  document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===id));
  document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===id));
  if(id) store.set('fwc-part',id);
 }
 document.querySelectorAll('nav button').forEach(t=>{
- t.addEventListener('click',()=>{showPage(t.dataset.page);track('fw_tab_opened',{tab:t.dataset.page})});
+ t.addEventListener('click',()=>{showPage(t.dataset.page);closeMenu();track('fw_tab_opened',{tab:t.dataset.page})});
 });
 document.getElementById('homeLink').addEventListener('click',e=>{
  e.preventDefault();
  showPage(null);
  document.getElementById('start').classList.add('active');
  store.set('fwc-part','start');
+ closeMenu();
  track('fw_tab_opened',{tab:'start'});
 });
 
@@ -767,23 +774,42 @@ function setStatus(t){document.getElementById('saveStatus').textContent=t}
 
 function buildTrk(){
  const h=HEROES.find(x=>x.id===currentHero)||HEROES[0];
+ const st=state[h.id]||{};
+ const part=st.part||1;
  document.getElementById('trkSingle').innerHTML=`
-  <h3>${h.name} — your notes <span style="color:var(--muted);font-weight:400;font-size:13px">(saved in this browser)</span></h3>
-  <div class="trk-row"><input type="range" min="0" max="30" value="${state[h.id]?.chNum||0}" data-ch="${h.id}" /><span class="pct" data-out="${h.id}">${state[h.id]?.ch||'—'}</span></div>
-  <textarea placeholder="Notes — recruits, deadlines, class plans…" data-note="${h.id}">${state[h.id]?.note||''}</textarea>`;
+  <h3>${h.name} — where you are <span style="color:var(--muted);font-weight:400;font-size:13px">(saved in this browser)</span></h3>
+  <div class="trk-row">
+   <span class="k">Part</span>
+   ${[1,2,3].map(n=>`<button type="button" class="mini${part===n?' act':''}" data-pp="${h.id}" data-part="${n}">${n===2?'Part 2 · War':'Part '+n}</button>`).join('')}
+  </div>
+  <div class="trk-row">
+   <span class="k">Chapter</span>
+   <button type="button" class="mini" data-pp="${h.id}" data-chd="-1">−</button>
+   <span class="pct" data-out="${h.id}">${st.chNum||'–'}</span>
+   <button type="button" class="mini" data-pp="${h.id}" data-chd="1">＋</button>
+  </div>
+  <textarea placeholder="Notes — recruits, deadlines, class plans…" data-note="${h.id}">${st.note||''}</textarea>`;
 }
 
 const trk=document.getElementById('trkSingle');
 let noteDebounce;
+trk.addEventListener('click',e=>{
+ const btn=e.target.closest('[data-pp]'); if(!btn) return;
+ const hero=btn.dataset.pp;
+ state[hero]=state[hero]||{};
+ if(btn.dataset.part){state[hero].part=+btn.dataset.part;markUsed('part')}
+ if(btn.dataset.chd){
+  const cur=parseInt(state[hero].chNum,10);
+  state[hero].chNum=(isNaN(cur)?0:cur)+(+btn.dataset.chd);
+  markUsed('chapter');
+ }
+ buildTrk();
+ saveState();
+});
 trk.addEventListener('input',e=>{
- const t=e.target, hero=t.dataset.ch||t.dataset.note;
+ const t=e.target, hero=t.dataset.note;
  if(!hero) return;
  state[hero]=state[hero]||{};
- if(t.dataset.ch){
-  state[hero].chNum=+t.value;
-  state[hero].ch=t.value==='0'?'—':'Ch '+t.value;
-   trk.querySelector(`[data-out="${hero}"]`).textContent=state[hero].ch;
- }
  if(t.dataset.note){
   state[hero].note=t.value;
   clearTimeout(noteDebounce);
@@ -792,7 +818,7 @@ trk.addEventListener('input',e=>{
  saveState();
 });
 trk.addEventListener('change',e=>{
- if(e.target.dataset.ch) markUsed('chapter');
+ if(e.target.dataset.note) markUsed('note');
 });
 
 /* sync */
