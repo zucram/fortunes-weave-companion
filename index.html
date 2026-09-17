@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
 <meta name="theme-color" content="#faf7f2" />
 <title>Fortune's Weave Companion</title>
 <meta name="description" content="A fan-made planner and reference for Fire Emblem Fortune's Weave: hero routes, the Free Time turn loop, and notes that save in your browser." />
@@ -49,10 +49,14 @@ header .actions button{
 header .actions button:hover{border-color:var(--line2)}
 #saveStatus{color:var(--muted)}
 
-nav{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-bottom:8px;overflow-x:auto}
+nav{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-bottom:8px;overflow-x:auto;
+  position:sticky;top:0;background:var(--bg);z-index:5;
+  padding-top:env(safe-area-inset-top);-webkit-overflow-scrolling:touch;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
 nav button{
-  border:0;background:none;padding:10px 14px 9px;cursor:pointer;color:var(--muted);
-  border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap
+  border:0;background:none;padding:12px 14px 10px;cursor:pointer;color:var(--muted);
+  border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;
+  font-size:14px;min-height:44px
 }
 nav button:hover{color:var(--ink)}
 nav button.active{color:var(--ink);border-bottom-color:var(--accent);font-weight:600}
@@ -130,6 +134,19 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
 @media (max-width:720px){
   .cards,.trk{grid-template-columns:1fr}
   .node em{display:none}
+  .wrap{padding:16px 12px calc(32px + env(safe-area-inset-bottom))}
+  .app-title{font-size:17px}
+  .app-title span{display:block;margin:2px 0 0}
+  header .actions button,header .actions a{min-height:44px;display:inline-flex;align-items:center;padding:8px 12px}
+  .picks button{min-height:44px}
+  .tips li{padding:12px 14px}
+  /* phone-as-second-screen layout: keep step compact, detail readable one-hand */
+  .node{padding:13px 14px}
+  .tips li strong{display:block;margin-bottom:1px}
+  .card{padding:13px 14px}
+  .card ul{padding-left:16px}
+  .trk .card textarea,dialog textarea{font-size:16px} /* prevents iOS focus zoom */
+  input[type=range]{height:44px}
 }
 </style>
 </head>
@@ -147,8 +164,8 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
 
 <nav>
   <button class="active" data-page="start">Start here</button>
-  <button data-page="p1">Heroic Games</button>
-  <button data-page="p2">After the timeskip</button>
+  <button data-page="p1">Part 1 · Games</button>
+  <button data-page="p2">Part 2 · War</button>
   <button data-page="always">Reference</button>
   <button data-page="tracker">Progress</button>
 </nav>
@@ -171,17 +188,17 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
       </ul>
     </div>
     <div class="card">
-      <h3>Good to know</h3>
+      <h3>How it works</h3>
       <ul>
-        <li>There is <strong>one autosave slot</strong> for the whole game. Fortuna's Blessing (move rewind) is the safety net, so use it early.</li>
-        <li>Hero paths save in parallel — you can switch between them without losing progress.</li>
-        <li>Quest and qualifier deadlines differ per route. Check the in-game calendar each Free Time block.</li>
-        <li>One in-game day is four turns; travel costs time.</li>
+        <li>One in-game day is four Turns. The clock display is meaningless — only the Turns count, and time only moves when you do something that costs a Turn.</li>
+        <li>There is one autosave slot for the whole game. Fortuna's Blessing (move rewind) is the safety net, so use it early.</li>
+        <li>Finishing one Hero path carries over world-map exploration and completed generic subquests to the next path. Levels, gear, and items do not cross paths — only into Part 2.</li>
+        <li>Support levels, Blessing levels, Notable Deeds, and Boons of Salvation are global: progress them once and every route benefits.</li>
       </ul>
     </div>
   </div>
 
-  <div class="callout">Unofficial fan tool, not affiliated with Nintendo or Intelligent Systems. Sources: Nintendo Direct transcripts, Serenes Forest, Fire Emblem Wiki.</div>
+  <div class="callout">Unofficial fan tool, not affiliated with Nintendo or Intelligent Systems. Sources: Nintendo Direct transcripts, Serenes Forest, Fire Emblem Wiki, RPG Site walkthrough tips.</div>
 </section>
 
 <section id="p1" class="page">
@@ -198,12 +215,16 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
 
 <section id="p2" class="page">
   <div class="section">
-    <h2>After the timeskip (1454)</h2>
+    <h2>Part 2 · War (1454)</h2>
     <p>The calendar loop is gone; the war plays out chapter to chapter. Notes here stay general until community guides have covered the chapters.</p>
 
     <div class="flow" id="flow2"></div>
     <div class="detail" id="detail2"></div>
-    <div class="callout">Don't carry the Dagsion weekly routine into Part II — there's no Free Time economy anymore.</div>
+    <div class="callout">Don't carry the Dagsion weekly routine into Part 2 — there's no Free Time economy anymore. Part 2 also has catch-up methods for units you benched in Part 1.</div>
+  </div>
+  <div class="section">
+    <h2>Part 3 · Salvation</h2>
+    <p>Support levels with Eshmel raised by feeding the Pale Raven in Part 1 take effect in Part 3, and Paralogue completions affect some character availability here. Otherwise this section stays short until guides cover it.</p>
   </div>
 </section>
 
@@ -245,11 +266,28 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
         </ul>
       </div>
       <div class="card">
-        <h3>Turns & recruiting</h3>
+        <h3>Turns</h3>
         <ul>
-          <li>Free Time: quests first, then Arena training, then exploration.</li>
-          <li>Temple Row blessings are nearly always worth a stop.</li>
-          <li>Gifts start a bond; shared meals at inns grow it.</li>
+          <li>A day is four Turns; time only advances when you spend one. Waiting in menus costs nothing.</li>
+          <li>Weekly Actions at Dagsion are free but refresh once per in-game week: Pale Raven, Shrines, Arena, gifts, meals, stable (Cai only).</li>
+          <li>Leave Dagsion to explore, come back roughly weekly to do your Weekly Actions.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Recruiting</h3>
+        <ul>
+          <li>Gifts start a bond; shared meals at inns grow it best.</li>
+          <li>Recruit late in Part 1 and the character arrives at a higher level with better starting gear.</li>
+          <li>Benched units too weak now can be raised to a catch-up method in Part 2.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Paralogues & missables</h3>
+        <ul>
+          <li>Nine Paralogues exist, all in Part 1, and each Hero path only sees some of them.</li>
+          <li>They appear for a limited window of in-game days — check the calendar, not just your level.</li>
+          <li>Paralogue completions affect some character availability in Part 3.</li>
+          <li>Nothing is permanently missable: any part of the game can be replayed after the finale.</li>
         </ul>
       </div>
       <div class="card">
@@ -319,51 +357,54 @@ const routeText={
 const steps1=[
  {id:'free',   n:'1', title:'Free time starts', sub:'orient before spending',
   detail:{
-   text:'Time is the currency: one day is four turns, and travel eats into it.',
+   text:'The clock only moves when you spend a Turn — nothing real is lost by stopping to think.',
    tips:[
-    ['Check the calendar','Quest and qualifier deadlines differ per route; note anything due soon.'],
-    ['Look at the map','New town quest, dungeon, supply cache, or recruit target?'],
-    ['Arena match day','Watching bouts on match days shows opponent intel early.']
+    ['Check the calendar','Main mission deadline first; also Paralogue windows (limited in-game days, Part 1 only).'],
+    ['Count your Turns','Subtract a return-to-Dagsion trip before you commit to exploring far.'],
+    ['Note the week','Weekly refreshes happen once per in-game week — plan one Dagsion stop halfway through.']
    ],
-   note:'Deadlines are the spine of Part I; everything else is optimization.'
+   note:'Nothing in this game is permanently missable, but Paralogues are the easiest thing to skip past.'
   }
  },
- {id:'zero',   n:'2', title:'Zero-turn value', sub:'before spending anything',
+ {id:'zero',   n:'2', title:'Weekly actions at Dagsion', sub:'free once per week',
   detail:{
-   text:'Clear whatever doesn’t cost turns first.',
+   text:'These cost no Turns, only money — do not save them all for one Week.',
    tips:[
-    ['Shopping Arcade','Restock tools and price out the next weapon enhancement.'],
-    ['Certification queue','Note exam requirements before spending turns elsewhere.'],
-    ['Quest text','Some quests complete incidentally on exploration you were doing anyway.']
+    ['Feed the Pale Raven','Raises a character Support with Eshmel that takes effect in Part 3.'],
+    ['Work at Shrines','Raises Bless levels for Blessing bonuses — this is global across all routes.'],
+    ['Arena training','Probably the most useful: raises skill EXP toward exams.'],
+    ['Gifts and meals','Gifts to recruit targets; inn meals to grow saves faster.'],
+    ['Feed the stable','Cai path only.']
    ],
-   note:'Each turn should buy XP, materials, proficiency, or a deadline. If it buys none, keep the turn.'
+   note:'Skipping a week occasionally is fine — just do not ignore them entirely.'
   }
  },
- {id:'spend',  n:'3', title:'Spend turns', sub:'inns and facilities',
+ {id:'spend',  n:'3', title:'Spend Turns at Dagsion', sub:'the costs',
   detail:{
-   text:'Inns turn turns into XP and materials; each facility does one job.',
+   text:'Only some Dagsion actions cost a Turn; the interface tells you which.',
    tips:[
-    ['Inn','Use turns for XP and materials; Leda performances add extra value.'],
-    ['Arena','Raises proficiencies — feeds the class exam pipeline.'],
-    ['Temple Row','Blessings give buffs and damage reduction for the next battle.']
+    ['Rest at the inn','Costs a Turn, gives XP and materials — Leda performances sell as value.'],
+    ['Shrines','Bless levels you unlock here exist on every Part 1 path at once, so progress them once.'],
+    ['Certification queue','Note exam requirements — Advanced wants around level 35 plus Renown 8.']
    ],
-   note:'Advanced exams sit around level 35 plus Renown 8; Beginner and Specialty come earlier.'
+   note:'A completed path carries Shrines progress, Supports, and Blessing levels forward globally anyway.'
   }
  },
  {id:'world',  n:'4', title:'World map', sub:'towns, dungeons, skirmishes',
   detail:{
-   text:'Routing matters because travel consumes time.',
+   text:'Routing matters because travel consumes Turns.',
    tips:[
-    ['Plan the loop','Hit towns and caches in one trip instead of two.'],
+    ['Plan the loop','Hit towns and caches in one trip out, and be back near Dagsion by the next week.'],
     ['Dungeons','Real-time squad exploration leads to Clashes with Link-Point combos.'],
-    ['Hero ability','Each hero has a free map power — use it while you’re there.']
+    ['Hero ability','Each hero has a free map power — use it while you are there.'],
+    ['Paralogue calendar','If one opened, it only sticks around a few in-game days — clear it before the next main mission.']
    ],
-   note:'Dungeon materials fund weapon enhancement — that’s the Part I economy loop.'
+   note:'Exploration and generic subquest completion carry over to your next Part 1 path once you finish this one — worth doing thoroughly now.'
   }
  },
  {id:'prep',   n:'5', title:'Battle prep', sub:'a 60-second check',
   detail:{
-   text:'Fix the obvious; don’t redesign the roster every match.',
+   text:'Fix the obvious; do not redesign the roster every match.',
    tips:[
     ['Gambits','Give at least one unit a control gambit; Crests are back.'],
     ['Durability','Budget Combat Arts in advance.'],
@@ -380,10 +421,22 @@ const steps1=[
     ['Link combos','Bank Link Points in Clashes and cash them on priority targets.'],
     ['Blaze timing','Save hero supers for boss kills and swarms.']
    ],
-   note:'After the battle you’re back at step 1 — nothing here is meant to be crossed off.'
+
+    note:'After the battle you’re back at step 1 — nothing here is meant to be crossed off.'
+   }
+  },
+ {id:'deadline', n:'7', title:'Free time ends', sub:'the deadline trick',
+  detail:{
+   text:'You do not need to be at the mission location when Free Time ends.',
+   tips:[
+    ['Green check near the deadline','As long as you have visited the mission location before, the game teleports you there when the deadline hits.'],
+    ['Most missions are in Dagsion','Which means you can be anywhere in Dagda on the last Turn.'],
+    ['Spend the last Turns','Do not waste the final Turns backtracking ceremonially.']
+   ],
+   note:'One of the easiest ways to waste Free Time Turns is ceremonial backtracking you never had to do.'
+   }
   }
- }
-];
+ ];
 
 const steps2=[
  {id:'p2prep',   n:'1', title:'Preparation', sub:'roster, gear, classes',
@@ -391,7 +444,7 @@ const steps2=[
    tips:[
     ['Roster','Check who actually has a role on this chapter’s map.'],
     ['Classes','Borrow useful abilities from exam classes instead of settling on one.'],
-    ['Parallel heroes','Stalled a route? Their progress saves separately — time-travel back to it.']
+    ['One path at a time','Paths can run in any order — finishing one carries map exploration and completed subquests into the next, so it is usually cheaper to finish before switching.']
    ],
    note:'Five years pass in-story between parts; re-check the roster after the timeskip.'}},
  {id:'p2chapter',n:'2', title:'Chapter check', sub:'what’s special here',
