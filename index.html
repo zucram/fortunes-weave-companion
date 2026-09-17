@@ -178,22 +178,24 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
   .cards,.trk{grid-template-columns:1fr}
   .node em{display:none}
   .wrap{padding:12px 12px calc(32px + env(safe-area-inset-bottom))}
-  nav button{padding:12px 14px;font-size:15px}
+  nav{flex-wrap:wrap;padding-left:max(8px,env(safe-area-inset-left));padding-right:max(8px,env(safe-area-inset-right));gap:5px}
+  nav button{padding:10px 12px;font-size:13px;min-height:40px}
   .nav-long{display:none}
   .nav-short{display:inline}
-  .logo-chip img{width:92px}
+  .logo-chip img{width:88px}
   .logo-chip{padding:4px 8px}
   .app-title{font-size:17px}
   .app-title span{display:block;margin:2px 0 0}
   header .actions button,header .actions a{min-height:44px;display:inline-flex;align-items:center;padding:8px 12px}
   .picks button{min-height:44px}
-  .tips li{padding:12px 14px}
-  /* phone-as-second-screen layout: keep step compact, detail readable one-hand */
-  .node{padding:13px 14px}
-  .tips li strong{display:block;margin-bottom:1px}
-  .card{padding:13px 14px}
-  .card ul{padding-left:16px}
-  .trk textarea,#trkSingle textarea,dialog textarea{font-size:16px} /* prevents iOS focus zoom */
+  #hud{margin-top:10px}
+  #hud .trk-row{flex-wrap:wrap;gap:6px}
+  #hud .trk-row .k{min-width:100%;letter-spacing:.05em}
+  #hud .trk-row input[type=range]{flex:1 1 100%;order:3;margin-top:2px}
+  #hud .trk-row .pct{order:4;flex:1 1 100%;text-align:right}
+  .trk-hud{padding:10px}
+  .trk-hud details{margin-top:2px}
+  .tips li{padding:12px 14px} /* prevents iOS focus zoom */
   input[type=range]{height:44px}
 }
 /* recruitment rows */
