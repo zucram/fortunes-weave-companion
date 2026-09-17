@@ -410,7 +410,7 @@ dialog textarea{width:100%;min-height:140px;border:1px solid var(--line);border-
   Unofficial fan tool, not affiliated with Nintendo, Intelligent Systems, or Koei Tecmo.
   <a href="https://ko-fi.com/K3K11RWTSL" target="_blank" rel="noopener">Support on Ko-fi</a>.
   <a href="#" id="aboutLink">About</a>
-  <span style="margin-left:8px">build 14 — 17 Sep</span>
+  <span style="margin-left:8px">build 16 — 17 Sep</span>
   <p style="margin:8px 0 0">Umami measures visits and feature use. Notes, checkmarks and save contents stay in your browser and are never sent in events.</p>
 </footer>
 </div>
@@ -776,6 +776,8 @@ function buildTrk(){
  const h=HEROES.find(x=>x.id===currentHero)||HEROES[0];
  const st=state[h.id]||{};
  const part=st.part||1;
+ const cap=CHAPTER_CAPS[part]||10;
+ const ch=Math.min(Math.max(parseInt(st.chNum,10)||1,1),cap);
  document.getElementById('trkSingle').innerHTML=`
   <h3>${h.name} — where you are <span style="color:var(--muted);font-weight:400;font-size:13px">(saved in this browser)</span></h3>
   <div class="trk-row">
@@ -784,12 +786,13 @@ function buildTrk(){
   </div>
   <div class="trk-row">
    <span class="k">Chapter</span>
-   <button type="button" class="mini" data-pp="${h.id}" data-chd="-1">−</button>
-   <span class="pct" data-out="${h.id}">${st.chNum||'–'}</span>
-   <button type="button" class="mini" data-pp="${h.id}" data-chd="1">＋</button>
+   <input type="range" style="flex:1;accent-color:var(--accent)" min="1" max="${cap}" value="${ch}" data-ch="${h.id}" />
+   <span class="pct" data-out="${h.id}">Ch ${ch} / ${cap}</span>
   </div>
+  ${part===3?'<p style="font-size:12px;color:var(--muted);margin:4px 0 0">Part 3 was described by sections so far — the cap here is a guess; treat it loosely.</p>':''}
   <textarea placeholder="Notes — recruits, deadlines, class plans…" data-note="${h.id}">${st.note||''}</textarea>`;
 }
+const CHAPTER_CAPS={1:12,2:6,3:10};
 
 const trk=document.getElementById('trkSingle');
 let noteDebounce;
@@ -797,17 +800,29 @@ trk.addEventListener('click',e=>{
  const btn=e.target.closest('[data-pp]'); if(!btn) return;
  const hero=btn.dataset.pp;
  state[hero]=state[hero]||{};
- if(btn.dataset.part){state[hero].part=+btn.dataset.part;markUsed('part')}
- if(btn.dataset.chd){
-  const cur=parseInt(state[hero].chNum,10);
-  state[hero].chNum=(isNaN(cur)?0:cur)+(+btn.dataset.chd);
-  markUsed('chapter');
+ if(btn.dataset.part){
+  state[hero].part=+btn.dataset.part;
+  markUsed('part');
+  const cur=parseInt(state[hero].chNum,10)||1;
+  state[hero].chNum=Math.min(Math.max(cur,1),CHAPTER_CAPS[state[hero].part]);
+  buildTrk();
+  saveState();
  }
- buildTrk();
- saveState();
 });
 trk.addEventListener('input',e=>{
- const t=e.target, hero=t.dataset.note;
+ const t=e.target;
+ if(t.dataset.ch){
+  const hero=t.dataset.ch;
+  state[hero]=state[hero]||{};
+  state[hero].chNum=+t.value;
+  const cap=CHAPTER_CAPS[state[hero].part||1];
+  const out=trk.querySelector(`[data-out="${hero}"]`);
+  if(out) out.textContent=`Ch ${t.value} / ${cap}`;
+  markUsed('chapter');
+  saveState();
+  return;
+ }
+ const hero=t.dataset.note;
  if(!hero) return;
  state[hero]=state[hero]||{};
  if(t.dataset.note){
